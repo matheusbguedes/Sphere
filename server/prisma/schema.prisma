@@ -9,23 +9,37 @@ datasource db {
 
 model User {
   id        String @id @default(uuid())
-  githubId  Int @unique
+  githubId  Int    @unique
   name      String
   login     String
   avatarUrl String
 
   post Post[]
+  Like Like[]
 }
 
 model Post {
-  id     String @id @default(uuid())
-  userId String
-  userName String
+  id        String @id @default(uuid())
+  userId    String
+  userName  String
   avatarUrl String
 
-  postImageUrl  String?
-  content   String
-  createdAt DateTime @default(now())
+  postImageUrl String?
+  content      String
+  createdAt    DateTime @default(now())
+
+  user User   @relation(fields: [userId], references: [id])
+  Like Like[]
+}
+
+model Like {
+  id        String @id @default(uuid())
+  userId    String
+  userName  String
+  avatarUrl String
+
+  postId String
 
   user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
 }
