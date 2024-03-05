@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { api } from "@/lib/api";
 import Cookie from "js-cookie";
@@ -8,6 +8,7 @@ import { FormEvent } from "react";
 import { MediaPicker } from "./MediaPicker";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { toast } from "sonner"
 
 export function NewPostForm({
   avatarUrl,
@@ -16,14 +17,17 @@ export function NewPostForm({
   avatarUrl: string;
   name: string;
 }) {
+
   async function handleCreatePost(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
 
-    const fileToUpload = formData.get("postImg");
+    const fileToUpload = formData.get("postImageUrl");
 
-    let postImg = "";
+    let postImageUrl = "";
+
+    console.log(fileToUpload)
 
     if (fileToUpload) {
       const uploadFormData = new FormData();
@@ -31,7 +35,7 @@ export function NewPostForm({
 
       const uploadResponse = await api.post("/upload", uploadFormData);
 
-      postImg = uploadResponse.data.fileUrl;
+      postImageUrl = uploadResponse.data.fileUrl;
     }
 
     const token = Cookie.get("token");
@@ -46,8 +50,8 @@ export function NewPostForm({
     await api.post(
       "/post",
       {
-        postImg,
         content: formData.get("content"),
+        postImageUrl,
         userName: name,
         avatarUrl,
         createdAt,
@@ -55,11 +59,22 @@ export function NewPostForm({
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
       }
-    );
-  }
+      );
 
+      toast("Você criou uma publicação!",
+      {
+        description: "Continue compartilhando.",
+        action: {
+          label: "Fechar",
+          onClick: () => toast.dismiss(),
+        },
+        duration: 1000 * 2, // 2 seconds
+      })
+  }
+  
   return (
     <form
       onSubmit={handleCreatePost}

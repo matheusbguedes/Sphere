@@ -22,7 +22,7 @@ export function MediaPicker() {
       <input
         onChange={onFileSelected}
         type="file"
-        name="postImg"
+        name="postImageUrl"
         id="media"
         accept="image/*"
         className="invisible h-0 w-0"

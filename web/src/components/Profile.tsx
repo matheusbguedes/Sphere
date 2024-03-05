@@ -12,7 +12,7 @@ export function Profile() {
         width={60}
         height={60}
         draggable={false}
-        alt=""
+        alt="avatar-image"
         className="size-12 rounded-full border-2 border-primary"
       />
       <span className="absolute bottom-0 right-1 size-3 rounded-full border-2 border-zinc-900 bg-primary" />
