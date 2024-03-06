@@ -14,8 +14,10 @@ model User {
   login     String
   avatarUrl String
 
-  post Post[]
-  Like Like[]
+  friends Friend[] @relation("Friendship")
+  userFriends Friend[] @relation("UserFriends")
+  posts   Post[]
+  likes   Like[]
 }
 
 model Post {
@@ -28,8 +30,8 @@ model Post {
   content      String
   createdAt    DateTime @default(now())
 
-  user User   @relation(fields: [userId], references: [id])
-  Like Like[]
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes Like[]
 }
 
 model Like {
@@ -40,6 +42,20 @@ model Like {
 
   postId String
 
-  user User @relation(fields: [userId], references: [id])
-  post Post @relation(fields: [postId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Friend {
+  id        String @id @default(uuid())
+  userId    String @map("user_id")
+  friendId  String @map("friend_id")
+  name      String
+  avatarUrl String
+
+  user   User @relation("UserFriends", fields: [userId], references: [id])
+  friend User @relation("Friendship", fields: [friendId], references: [id])
+
+  @@index([userId], name: "userId")
+  @@index([friendId], name: "friendId")
 }

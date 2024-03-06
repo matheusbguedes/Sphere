@@ -1,13 +1,18 @@
-import { NewPost } from "./NewPost";
-import { Toaster } from "./ui/sonner";
-import PostsLists from "./PostsList";
+"use client";
 
-export default function Feed() {
+import { PostsProvider } from "@/lib/context";
+import { User } from "@/types/User";
+
+import { NewPost } from "./NewPost";
+import PostsList from "./PostsList";
+
+export default function Feed({ user }: { user: User }) {
   return (
-    <div className="w-full flex flex-col items-center justify-center gap-4 p-6">
-      <NewPost />
-      <PostsLists/>
-      <Toaster />
-    </div>
+    <PostsProvider>
+      <div className="w-full flex flex-col items-center justify-center gap-6 p-6 mt-20 relative">
+        <NewPost user={user} />
+        <PostsList user={user} />
+      </div>
+    </PostsProvider>
   );
 }

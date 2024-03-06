@@ -6,6 +6,7 @@ import multipart from "@fastify/multipart";
 import fastify from "fastify";
 import { resolve } from "node:path";
 import { authRoutes } from "./routes/auth";
+import { friendsRoutes } from "./routes/friends";
 import { postsRoutes } from "./routes/posts";
 import { uploadRoutes } from "./routes/upload";
 
@@ -29,6 +30,7 @@ app.register(jwt, {
 app.register(authRoutes);
 app.register(uploadRoutes);
 app.register(postsRoutes);
+app.register(friendsRoutes);
 
 app
   .listen({

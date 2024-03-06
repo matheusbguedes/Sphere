@@ -1,51 +1,87 @@
-import { Heart } from "lucide-react";
-import Image from "next/image";
+import { api } from "@/lib/api";
+import { useProvider } from "@/lib/context";
+
+import { Posts } from "@/types/Posts";
+import { User } from "@/types/User";
 import dayjs from "dayjs";
+import Cookie from "js-cookie";
+import { Trash2 } from "lucide-react";
+import Image from "next/image";
+import toast from "react-hot-toast";
+import { Like } from "./Like";
 
-interface Post {
-  id: string;
-  userName: string;
-  avatarUrl: string;
-  content: string;
-  postImageUrl: string | null;
-  createdAt: Date;
-}
+export function CardPost({ user, post }: { user: User; post: Posts }) {
+  const token = Cookie.get("token");
+  const { getPosts } = useProvider();
 
-export function CardPost({ post } : { post : Post }) {
+  const handlePostDelete = async () => {
+    await api.delete(`/post/${post.id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    toast.success("Sua publicação foi excluida!", {
+      style: {
+        background: "rgb(39 39 42)",
+        color: "rgb(161 161 170)",
+      },
+      iconTheme: {
+        primary: "#0066FF",
+        secondary: "rgb(39 39 42)",
+      },
+    });
+
+    return getPosts();
+  };
+
   return (
-    <div className="w-1/3 flex flex-col gap-6 rounded-xl p-5 border-2 border-zinc-800">
-      <div className="flex items-center gap-3">
-        <Image
-          src={post.avatarUrl}
-          width={60}
-          height={60}
-          draggable={false}
-          alt="avatar-image"
-          className="size-12 rounded-full border-2 border-primary"
-        />
-        <div className="flex flex-col">
-          <p className="max-w-[140px] text-zinc-400 text-base">{post.userName}</p>
-          <p className="max-w-[140px] text-zinc-600 text-sm"> {dayjs(post.createdAt).format('D[ de ]MMMM[, ]YYYY')}</p>
+    <div className="w-full md:max-w-2xl  flex flex-col gap-5 rounded-xl p-5 border-2 border-zinc-800">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
+          <Image
+            src={post.avatarUrl}
+            width={60}
+            height={60}
+            draggable={false}
+            alt="avatar-image"
+            className="size-12 rounded-full border-2 border-primary"
+          />
+          <div className="flex flex-col">
+            <p className="max-w-[140px] text-zinc-400 text-base">
+              {post.userName}
+            </p>
+            <p className="max-w-[140px] text-zinc-500 text-sm">
+              {dayjs(post.createdAt).format("D[ de ]MMM")}
+            </p>
+          </div>
         </div>
-      </div>
-      
-      <p className="max-w-[140px] text-zinc-400 text-base">{post.content}</p>
 
-      <Image
-        src={post.postImageUrl!}
-        width={500}
-        height={500}
-        draggable={false}
-        alt="post-image"
-        className="aspect-video w-full rounded-lg object-cover shadow-sm"
-      />
-
-      <div className="w-full flex gap-2 items-center">
-        <span className="flex cursor-pointer items-center text-sm p-2 gap-2 rounded-md text-primary hover:bg-primary/20">
-          <Heart className="size-5" />
-        </span>
-        <p className="text-zinc-400 text-sm">2 curtidas</p>
+        {post.userId == user.sub && (
+          <Trash2
+            onClick={handlePostDelete}
+            className="size-5.5 p-1 cursor-pointer text-zinc-500  hover:hover:text-red-600"
+          />
+        )}
       </div>
+
+      {post.content && (
+        <p className="max-w-[140px] text-zinc-400 text-base">{post.content}</p>
+      )}
+
+      {post.postImageUrl && (
+        <Image
+          src={post.postImageUrl!}
+          width={1000}
+          height={1000}
+          draggable={false}
+          alt="post-image"
+          className="aspect-video w-full rounded-lg object-cover shadow-sm"
+        />
+      )}
+
+      <Like user={user} post={post} />
     </div>
   );
 }
