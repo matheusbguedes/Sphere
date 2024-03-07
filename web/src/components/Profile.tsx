@@ -14,7 +14,7 @@ export function Profile({ user }: { user: User }) {
         <p className="max-w-[140px] text-zinc-400 text-sm">{user.name}</p>
         <a
           href="/api/auth/logout"
-          className="flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:hover:text-red-600"
+          className="flex items-center gap-2 text-sm text-zinc-500  transition-colors hover:hover:text-red-600"
         >
           sair <LogOut className="size-3" />
         </a>
@@ -27,7 +27,7 @@ export function Profile({ user }: { user: User }) {
         draggable={false}
         alt="profile-image"
         onClick={() => {
-          router.push(`/user/${user.sub}`)
+          router.push(`/user/${user.sub}`);
         }}
         className="size-11 sm:size-12 rounded-full outline outline-2 outline-primary cursor-pointer"
       />

@@ -25,7 +25,12 @@ export function Header() {
   return (
     <div className="w-full flex items-center justify-between p-4 sm:px-10 fixed top-0 border-b-2 border-zinc-800 bg-zinc-900 z-50">
       <div className="flex items-center justify-center gap-4">
-        <Image src={sphere} alt="sphere-logo" className="size-10 sm:size-12" />
+        <Image
+          src={sphere}
+          alt="sphere-logo"
+          draggable={false}
+          className="size-10 sm:size-12"
+        />
       </div>
 
       {isAuthenticated ? (
