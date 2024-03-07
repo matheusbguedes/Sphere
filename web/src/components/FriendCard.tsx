@@ -4,9 +4,11 @@ import { Friend } from "@/types/Friend";
 import Cookie from "js-cookie";
 import { UserRoundX } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export function FriendCard({ friend }: { friend: Friend }) {
+  const router = useRouter()
   const { getFriends, getNonFriends } = useProvider();
 
   const handleRemoveFriend = async () => {
@@ -35,7 +37,7 @@ export function FriendCard({ friend }: { friend: Friend }) {
   };
 
   return (
-    <div className="flex items-center justify-between gap-3 p-4 rounded-xl cursor-pointer transition-colors hover:bg-zinc-800">
+    <div className="flex items-center justify-between gap-3 p-4 rounded-xl transition-colors hover:bg-zinc-800">
       <div className="flex items-center gap-3">
         <Image
           src={friend.avatarUrl}
@@ -43,7 +45,10 @@ export function FriendCard({ friend }: { friend: Friend }) {
           height={60}
           draggable={false}
           alt="avatar-image"
-          className="size-12 rounded-full border-2 border-primary"
+          onClick={() => {
+            router.push(`/user/${friend.userId}`)
+          }}
+          className="size-12 rounded-full hover:outline outline-2 outline-primary cursor-pointer"
         />
 
         <p className="max-w-[140px] text-zinc-400 text-base">{friend.name}</p>

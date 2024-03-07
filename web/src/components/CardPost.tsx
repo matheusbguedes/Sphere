@@ -9,10 +9,13 @@ import { Trash2 } from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { Like } from "./Like";
+import { useRouter } from "next/router";
 
 export function CardPost({ user, post }: { user: User; post: Posts }) {
+
   const token = Cookie.get("token");
   const { getPosts } = useProvider();
+  const router = useRouter();
 
   const handlePostDelete = async () => {
     await api.delete(`/post/${post.id}`, {
@@ -46,7 +49,10 @@ export function CardPost({ user, post }: { user: User; post: Posts }) {
             height={60}
             draggable={false}
             alt="avatar-image"
-            className="size-12 rounded-full border-2 border-primary"
+            onClick={() => {
+              router.push(`/user/${post.userId}`)
+            }}
+            className="size-12 rounded-full border-2 border-primary cursor-pointer"
           />
           <div className="flex flex-col">
             <p className="max-w-[140px] text-zinc-400 text-base">

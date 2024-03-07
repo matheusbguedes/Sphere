@@ -11,10 +11,12 @@ import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { useRouter } from "next/navigation";
 
 export function NewPost({ user }: { user: User }) {
   const formRef = useRef<HTMLFormElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const router = useRouter();
   const { getPosts } = useProvider();
 
   async function handleCreatePost(event: FormEvent<HTMLFormElement>) {
@@ -119,8 +121,11 @@ export function NewPost({ user }: { user: User }) {
           width={60}
           height={60}
           draggable={false}
-          alt=""
-          className="size-12 rounded-full border-2 border-primary"
+          alt="profile-image"
+          onClick={() => {
+            router.push(`/user/${user.sub}`)
+          }}
+          className="size-12 rounded-full outline outline-2 outline-primary"
         />
         <Input
           name="content"
