@@ -1,5 +1,5 @@
+import { useProvider } from "@/context/FeedContext";
 import { api } from "@/lib/api";
-import { useProvider } from "@/lib/context";
 import { Friend } from "@/types/Friend";
 import Cookie from "js-cookie";
 import { UserRoundX } from "lucide-react";
@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export function FriendCard({ friend }: { friend: Friend }) {
-  const router = useRouter()
+  const router = useRouter();
   const { getFriends, getNonFriends } = useProvider();
 
   const handleRemoveFriend = async () => {
@@ -24,7 +24,7 @@ export function FriendCard({ friend }: { friend: Friend }) {
 
     getNonFriends();
 
-    return toast.success(`Você removeu ${friend.name.split(" ")[0]}`, {
+    return toast.success(`Você deixou de seguir ${friend.name.split(" ")[0]}`, {
       style: {
         background: "rgb(39 39 42)",
         color: "rgb(161 161 170)",
@@ -46,7 +46,7 @@ export function FriendCard({ friend }: { friend: Friend }) {
           draggable={false}
           alt="avatar-image"
           onClick={() => {
-            router.push(`/user/${friend.userId}`)
+            router.push(`/user/${friend.userId}`);
           }}
           className="size-12 rounded-full hover:outline outline-2 outline-primary cursor-pointer"
         />

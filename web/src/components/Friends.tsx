@@ -1,4 +1,4 @@
-import { useProvider } from "@/lib/context";
+import { useProvider } from "@/context/FeedContext";
 import { FriendCard } from "./FriendCard";
 import { NonFriendCard } from "./NonFriendCard";
 

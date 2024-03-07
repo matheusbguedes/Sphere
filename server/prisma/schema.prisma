@@ -14,10 +14,10 @@ model User {
   login     String
   avatarUrl String
 
-  friends Friend[] @relation("Friendship")
-  userFriends Friend[] @relation("UserFriends")
-  posts   Post[]
-  likes   Like[]
+  followers Friend[] @relation("follower")
+  following Friend[] @relation("following")
+  posts     Post[]
+  likes     Like[]
 }
 
 model Post {
@@ -48,14 +48,14 @@ model Like {
 
 model Friend {
   id        String @id @default(uuid())
-  userId    String @map("user_id")
-  friendId  String @map("friend_id")
+  follower  String @map("user_id")
+  followed  String @map("friend_id")
   name      String
   avatarUrl String
 
-  user   User @relation("UserFriends", fields: [userId], references: [id])
-  friend User @relation("Friendship", fields: [friendId], references: [id])
+  user   User @relation("following", fields: [follower], references: [id])
+  friend User @relation("follower", fields: [followed], references: [id])
 
-  @@index([userId], name: "userId")
-  @@index([friendId], name: "friendId")
+  @@index([follower], name: "follower")
+  @@index([followed], name: "followed")
 }

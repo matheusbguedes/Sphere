@@ -1,6 +1,6 @@
 "use client";
 
-import { useProvider } from "@/lib/context";
+import { useProvider } from "@/context/FeedContext";
 import { User } from "@/types/User";
 import { CardPost } from "./CardPost";
 

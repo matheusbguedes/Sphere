@@ -1,6 +1,6 @@
 "use client";
 
-import { useProvider } from "@/context/FeedContext";
+import { useProvider } from "@/context/ProfileContext";
 import { api } from "@/lib/api";
 
 import { Posts } from "@/types/Posts";
@@ -9,14 +9,13 @@ import dayjs from "dayjs";
 import Cookie from "js-cookie";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Like } from "./Like";
 
 export function CardPost({ user, post }: { user: User; post: Posts }) {
   const token = Cookie.get("token");
-  const router = useRouter();
-  const { getPosts } = useProvider();
+
+  const { getPosts, getProfile } = useProvider();
 
   const handlePostDelete = async () => {
     await api.delete(`/post/${post.id}`, {
@@ -37,7 +36,8 @@ export function CardPost({ user, post }: { user: User; post: Posts }) {
       },
     });
 
-    return getPosts();
+    getPosts();
+    getProfile();
   };
 
   return (
@@ -50,9 +50,6 @@ export function CardPost({ user, post }: { user: User; post: Posts }) {
             height={60}
             draggable={false}
             alt="avatar-image"
-            onClick={() => {
-              router.push(`/user/${post.userId}`);
-            }}
             className="size-12 rounded-full outline outline-2 outline-primary cursor-pointer"
           />
           <div className="flex flex-col">

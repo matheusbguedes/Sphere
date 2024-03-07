@@ -9,6 +9,7 @@ import { authRoutes } from "./routes/auth";
 import { friendsRoutes } from "./routes/friends";
 import { postsRoutes } from "./routes/posts";
 import { uploadRoutes } from "./routes/upload";
+import { profileRoutes } from "./routes/profile";
 
 const app = fastify();
 
@@ -30,6 +31,7 @@ app.register(jwt, {
 app.register(authRoutes);
 app.register(uploadRoutes);
 app.register(postsRoutes);
+app.register(profileRoutes);
 app.register(friendsRoutes);
 
 app

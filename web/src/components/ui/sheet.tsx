@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
 import * as React from "react";
 
-import { PostsProvider } from "@/lib/context";
+import { FeedProvider } from "@/context/FeedContext";
 import { cn } from "@/lib/utils";
 import Friends from "../Friends";
 
@@ -66,7 +66,7 @@ const SheetContent = React.forwardRef<
       className={cn(sheetVariants({ side }), className)}
       {...props}
     >
-      <PostsProvider>
+      <FeedProvider>
         {children}
         <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70  transition-opacity text-zinc-500 hover:text-zinc-400 disabled:pointer-events-none data-[state=open]:bg-zinc-100">
           <X className="h-4 w-4" />
@@ -74,7 +74,7 @@ const SheetContent = React.forwardRef<
         </SheetPrimitive.Close>
 
         <Friends />
-      </PostsProvider>
+      </FeedProvider>
     </SheetPrimitive.Content>
   </SheetPortal>
 ));

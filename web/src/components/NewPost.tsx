@@ -1,17 +1,17 @@
 "use client";
 
+import { useProvider } from "@/context/FeedContext";
 import { api } from "@/lib/api";
-import { useProvider } from "@/lib/context";
 import { User } from "@/types/User";
 import Cookie from "js-cookie";
 import { Camera, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { useRouter } from "next/navigation";
 
 export function NewPost({ user }: { user: User }) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -123,9 +123,9 @@ export function NewPost({ user }: { user: User }) {
           draggable={false}
           alt="profile-image"
           onClick={() => {
-            router.push(`/user/${user.sub}`)
+            router.push(`/user/${user.sub}`);
           }}
-          className="size-12 rounded-full outline outline-2 outline-primary"
+          className="size-12 rounded-full outline cursor-pointer outline-2 outline-primary"
         />
         <Input
           name="content"

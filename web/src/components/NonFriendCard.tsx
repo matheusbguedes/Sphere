@@ -1,5 +1,5 @@
+import { useProvider } from "@/context/FeedContext";
 import { api } from "@/lib/api";
-import { useProvider } from "@/lib/context";
 import { NonFriend } from "@/types/Friend";
 import Cookie from "js-cookie";
 import { UserRoundPlus } from "lucide-react";
@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 export function NonFriendCard({ friend }: { friend: NonFriend }) {
   const { getFriends, getNonFriends } = useProvider();
   const router = useRouter();
-  
+
   const handleAddFriend = async () => {
     const token = Cookie.get("token");
     await api.post(
@@ -28,7 +28,7 @@ export function NonFriendCard({ friend }: { friend: NonFriend }) {
 
     getNonFriends();
 
-    return toast.success(`Você adicionou ${friend.name.split(" ")[0]}`, {
+    return toast.success(`Você começou a seguir ${friend.name.split(" ")[0]}`, {
       style: {
         background: "rgb(39 39 42)",
         color: "rgb(161 161 170)",
@@ -50,7 +50,7 @@ export function NonFriendCard({ friend }: { friend: NonFriend }) {
           draggable={false}
           alt="avatar-image"
           onClick={() => {
-            router.push(`/user/${friend.id}`)
+            router.push(`/user/${friend.id}`);
           }}
           className="size-12 rounded-full hover:outline outline-2 outline-primary cursor-pointer"
         />

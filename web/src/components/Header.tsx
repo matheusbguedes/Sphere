@@ -5,6 +5,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { getUser } from "@/lib/auth";
 import { UsersRound } from "lucide-react";
 import { cookies } from "next/headers";
 import Image from "next/image";
@@ -12,11 +13,14 @@ import { Profile } from "./Profile";
 import { SignIn } from "./SignIn";
 import { Button } from "./ui/button";
 import sphere from "/public/sphere-logo.svg";
-import { getUser } from "@/lib/auth";
 
 export function Header() {
   const isAuthenticated = cookies().has("token");
-  const user = getUser();
+  let user;
+
+  if (isAuthenticated) {
+    user = getUser();
+  }
 
   return (
     <div className="w-full flex items-center justify-between p-4 sm:px-10 fixed top-0 border-b-2 border-zinc-800 bg-zinc-900 z-50">
@@ -43,7 +47,7 @@ export function Header() {
             </SheetContent>
           </Sheet>
 
-          <Profile user={user} />
+          <Profile user={user!} />
         </div>
       ) : (
         <SignIn />

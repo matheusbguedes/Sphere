@@ -10,7 +10,7 @@ import React, {
   useState,
 } from "react";
 
-type PostsContextValue = {
+type FeedContextValue = {
   friends: Friend[];
   nonFriends: NonFriend[];
   posts: Posts[];
@@ -19,11 +19,11 @@ type PostsContextValue = {
   getNonFriends: () => Promise<void>;
 };
 
-export const PostsContext = createContext<PostsContextValue | undefined>(
+export const FeedContext = createContext<FeedContextValue | undefined>(
   undefined
 );
 
-export const PostsProvider: React.FC<{ children: ReactNode }> = ({
+export const FeedProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [posts, setPosts] = useState<Posts[]>([]);
@@ -69,7 +69,7 @@ export const PostsProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   return (
-    <PostsContext.Provider
+    <FeedContext.Provider
       value={{
         friends,
         nonFriends,
@@ -80,14 +80,14 @@ export const PostsProvider: React.FC<{ children: ReactNode }> = ({
       }}
     >
       {children}
-    </PostsContext.Provider>
+    </FeedContext.Provider>
   );
 };
 
-export const useProvider = (): PostsContextValue => {
-  const context = useContext(PostsContext);
+export const useProvider = (): FeedContextValue => {
+  const context = useContext(FeedContext);
   if (!context) {
-    throw new Error("usePosts must be used within a PostsProvider");
+    throw new Error("usePosts must be used within a FeedProvider");
   }
   return context;
 };

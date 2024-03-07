@@ -1,6 +1,6 @@
 "use client";
 
-import { useProvider } from "@/context/FeedContext";
+import { useProvider } from "@/context/ProfileContext";
 import { api } from "@/lib/api";
 
 import { Posts } from "@/types/Posts";
@@ -16,7 +16,7 @@ export function Like({ user, post }: { user: User; post: Posts }) {
 
   const [like, setLike] = useState(isLiked);
   const token = Cookie.get("token");
-  const { getPosts } = useProvider();
+  const { getPosts, getProfile } = useProvider();
 
   const handlePostLike = async () => {
     await api.post(
@@ -35,7 +35,8 @@ export function Like({ user, post }: { user: User; post: Posts }) {
 
     setLike(!isLiked);
 
-    return getPosts();
+    getPosts();
+    getProfile();
   };
 
   return (

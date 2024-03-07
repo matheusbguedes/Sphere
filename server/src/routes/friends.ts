@@ -31,28 +31,6 @@ export async function friendsRoutes(app: FastifyInstance) {
     );
   });
 
-  app.get("/non-friends", async (request) => {
-    const friends = await prisma.friend.findMany({
-      where: {
-        friendId: request.user.sub,
-      },
-    });
-
-    const allUsers = await prisma.user.findMany();
-
-    const nonFriends = allUsers.filter(
-      (user) =>
-        user.id !== request.user.sub &&
-        !friends.some((friend) => friend.userId === user.id)
-    );
-
-    return nonFriends.map((user) => ({
-      id: user.id,
-      name: user.name,
-      avatarUrl: user.avatarUrl,
-    }));
-  });
-
   app.post("/friend/add", async (request) => {
     const bodySchema = z.object({
       id: z.string(),
@@ -64,8 +42,8 @@ export async function friendsRoutes(app: FastifyInstance) {
 
     const friend = await prisma.friend.create({
       data: {
-        userId: id,
-        friendId: request.user.sub,
+        followed: id,
+        follower: request.user.sub,
         name: userName,
         avatarUrl,
       },
@@ -86,5 +64,27 @@ export async function friendsRoutes(app: FastifyInstance) {
         id: id,
       },
     });
+  });
+
+  app.get("/non-friends", async (request) => {
+    const friends = await prisma.friend.findMany({
+      where: {
+        followed: request.user.sub,
+      },
+    });
+
+    const allUsers = await prisma.user.findMany();
+
+    const nonFriends = allUsers.filter(
+      (user) =>
+        user.id !== request.user.sub &&
+        !friends.some((friend) => friend.userId === user.id)
+    );
+
+    return nonFriends.map((user) => ({
+      id: user.id,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
+    }));
   });
 }
