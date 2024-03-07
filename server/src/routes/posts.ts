@@ -14,7 +14,7 @@ export async function postsRoutes(app: FastifyInstance) {
         OR: [
           {
             user: {
-              userFriends: {
+              followers: {
                 some: {},
               },
             },
@@ -23,6 +23,51 @@ export async function postsRoutes(app: FastifyInstance) {
             userId: request.user.sub,
           },
         ],
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+      include: {
+        likes: true,
+      },
+    });
+
+    return posts.map(
+      (post: {
+        id: string;
+        userName: string;
+        userId: string;
+        avatarUrl: string;
+        content: string;
+        postImageUrl: string | null;
+        likes: Like[];
+        createdAt: Date;
+      }) => {
+        return {
+          id: post.id,
+          userName: post.userName,
+          userId: post.userId,
+          avatarUrl: post.avatarUrl,
+          content: post.content,
+          postImageUrl: post.postImageUrl,
+          likes: post.likes.length,
+          userIdLiked: post.likes,
+          createdAt: post.createdAt,
+        };
+      }
+    );
+  });
+
+  app.get("/posts/:id", async (request) => {
+    const paramsSchema = z.object({
+      id: z.string().uuid(),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+
+    const posts = await prisma.post.findMany({
+      where: {
+        userId: id,
       },
       orderBy: {
         createdAt: "asc",

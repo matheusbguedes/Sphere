@@ -14,18 +14,6 @@ export async function profileRoutes(app: FastifyInstance) {
 
     const { id } = paramsSchema.parse(request.params);
 
-    const posts = await prisma.post.findMany({
-      where: {
-        userId: id,
-      },
-      orderBy: {
-        createdAt: "asc",
-      },
-      include: {
-        likes: true,
-      },
-    });
-
     const user = await prisma.user.findUnique({
       where: {
         id,
@@ -33,31 +21,19 @@ export async function profileRoutes(app: FastifyInstance) {
       include: {
         posts: true,
         likes: true,
-        friends: true,
-        userFriends: true,
+        followers: true,
+        following: true,
       },
     });
 
     return {
-      user: {
-        id: user!.id,
-        name: user!.name,
-        avatarUrl: user!.avatarUrl,
-        postsCount: user!.posts.length,
-        likesCount: user!.likes.length,
-        followersCount: user!.followers.length,
-        followingCount: user!.following.length,
-      },
-      posts: posts.map((post) => {
-        return {
-          id: post.id,
-          content: post.content,
-          postImageUrl: post.postImageUrl,
-          likes: post.likes.length,
-          userIdLiked: post.likes,
-          createdAt: post.createdAt,
-        };
-      }),
+      id: user!.id,
+      name: user!.name,
+      avatarUrl: user!.avatarUrl,
+      postsCount: user!.posts.length,
+      likesCount: user!.likes.length,
+      followersCount: user!.followers.length,
+      followingCount: user!.following.length,
     };
   });
 }

@@ -10,20 +10,20 @@ export async function friendsRoutes(app: FastifyInstance) {
   app.get("/friends", async (request) => {
     const friends = await prisma.friend.findMany({
       where: {
-        friendId: request.user.sub,
+        follower: request.user.sub,
       },
     });
 
     return friends.map(
       (friend: {
         id: string;
-        userId: string;
+        followed: string;
         name: string;
         avatarUrl: string;
       }) => {
         return {
           id: friend.id,
-          userId: friend.userId,
+          userId: friend.followed,
           name: friend.name,
           avatarUrl: friend.avatarUrl,
         };
@@ -42,8 +42,8 @@ export async function friendsRoutes(app: FastifyInstance) {
 
     const friend = await prisma.friend.create({
       data: {
-        followed: id,
         follower: request.user.sub,
+        followed: id,
         name: userName,
         avatarUrl,
       },
@@ -69,7 +69,7 @@ export async function friendsRoutes(app: FastifyInstance) {
   app.get("/non-friends", async (request) => {
     const friends = await prisma.friend.findMany({
       where: {
-        followed: request.user.sub,
+        follower: request.user.sub,
       },
     });
 
@@ -78,7 +78,7 @@ export async function friendsRoutes(app: FastifyInstance) {
     const nonFriends = allUsers.filter(
       (user) =>
         user.id !== request.user.sub &&
-        !friends.some((friend) => friend.userId === user.id)
+        !friends.some((friend) => friend.followed === user.id)
     );
 
     return nonFriends.map((user) => ({

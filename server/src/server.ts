@@ -8,8 +8,8 @@ import { resolve } from "node:path";
 import { authRoutes } from "./routes/auth";
 import { friendsRoutes } from "./routes/friends";
 import { postsRoutes } from "./routes/posts";
-import { uploadRoutes } from "./routes/upload";
 import { profileRoutes } from "./routes/profile";
+import { uploadRoutes } from "./routes/upload";
 
 const app = fastify();
 
