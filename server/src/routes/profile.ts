@@ -26,10 +26,21 @@ export async function profileRoutes(app: FastifyInstance) {
       },
     });
 
+    const findFriend = await prisma.friend.findFirst({
+      where: {
+        follower: request.user.sub,
+        followed: id,
+      },
+    });
+
+    const isFriend = !!findFriend;
+
     return {
       id: user!.id,
       name: user!.name,
       avatarUrl: user!.avatarUrl,
+      isFriend,
+      friendshipId: findFriend?.id,
       postsCount: user!.posts.length,
       likesCount: user!.likes.length,
       followersCount: user!.followers.length,
