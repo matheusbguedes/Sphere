@@ -34,7 +34,7 @@ export function Header() {
       </div>
 
       {isAuthenticated ? (
-        <div className="flex items-center justify-center gap-3 md:gap-12 ">
+        <div className="flex items-center justify-center gap-5 md:gap-12 ">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="link">

@@ -4,11 +4,11 @@ import { Button } from "./ui/button";
 export function NotAuthenticated() {
   return (
     <div className="h-screen w-screen flex flex-col justify-center items-center gap-4">
-      <h1 className="flex font-medium text-zinc-400 text-3xl">
+      <h1 className="flex font-medium text-zinc-400 text-2xl md:text-3xl">
         Você ainda não está
         <span className="ml-2 text-primary">conectado</span>.
       </h1>
-      <p className=" text-zinc-500 text-base">
+      <p className=" text-zinc-500 text-sm md:text-base">
         Conecte-se facilmente com sua conta do Github.
       </p>
       <a

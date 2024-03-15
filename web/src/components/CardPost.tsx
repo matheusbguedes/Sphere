@@ -74,7 +74,9 @@ export function CardPost({ user, post }: { user: User; post: Posts }) {
       </div>
 
       {post.content && (
-        <p className="max-w-[140px] text-zinc-400 text-base">{post.content}</p>
+        <p className="text-zinc-400 text-base text-nowrap md:text-wrap">
+          {post.content}
+        </p>
       )}
 
       {post.postImageUrl && (

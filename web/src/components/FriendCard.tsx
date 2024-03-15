@@ -56,7 +56,7 @@ export function FriendCard({ friend }: { friend: Friend }) {
 
       <UserRoundX
         onClick={handleRemoveFriend}
-        className="size-6 p-1 cursor-pointer transition-colors text-zinc-500 hover:hover:text-red-600"
+        className="size-4 cursor-pointer transition-colors text-zinc-500 hover:hover:text-red-600"
       />
     </div>
   );

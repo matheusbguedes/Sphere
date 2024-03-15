@@ -91,7 +91,7 @@ export default function Profile({ user }: { user: User }) {
             height={1000}
             draggable={false}
             alt="avatar-image"
-            className="size-60 rounded-full outline outline-8 outline-zinc-900"
+            className="size-48 md:size-60 rounded-full outline outline-8 outline-zinc-900"
           />
           <h1 className="font-medium text-zinc-400 text-3xl">{profile.name}</h1>
 
@@ -132,7 +132,7 @@ export default function Profile({ user }: { user: User }) {
 
       {profile.postsCount == 0 && (
         <div className="h-full flex flex-1 flex-col items-center justify-center gap-2">
-          <span className="text-primary">
+          <span className="text-primary animate-pulse">
             <CircleDashed className="size-5" />
           </span>
           <p className="text-base font-medium text-zinc-600 ">
