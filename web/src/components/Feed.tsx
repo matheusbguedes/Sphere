@@ -9,7 +9,7 @@ import PostsList from "./PostsList";
 export default function Feed({ user }: { user: User }) {
   return (
     <FeedProvider>
-      <div className="w-full h-full flex flex-1 flex-col items-center gap-6 pb-8 mt-24">
+      <div className="w-full h-full flex flex-1 flex-col items-center gap-6 pb-6 px-3 mt-24">
         <NewPost user={user} />
         <PostsList user={user} />
       </div>
