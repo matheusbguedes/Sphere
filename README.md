@@ -57,10 +57,12 @@ O projeto estará pronto e em execução no endereço http://localhost:3000.
 
 ## 🛠️ Construído com
 
-- [Next.js](https://nextjs.org/) - O framework React para produção
+- [Next.js](https://nextjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Shadcnui](https://github.com/shadcnui) - Biblioteca XYZ para ... (adicione uma breve descrição)
+- [Shadcnui](https://github.com/shadcnui)
+- [Fastify](https://www.fastify.io/) 
+- [Prisma](https://www.prisma.io/) 
 
 ## ✒️ Autores
 
