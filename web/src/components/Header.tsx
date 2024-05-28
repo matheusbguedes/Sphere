@@ -38,14 +38,14 @@ export function Header() {
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="link">
-                <UsersRound className="mr-2 size-4" />
-                amigos
+                Amigos
+                <UsersRound className="ml-2 size-4" />
               </Button>
             </SheetTrigger>
             <SheetContent className="max-h-screen bg-zinc-900">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2 text-zinc-400">
-                  amigos
+                  Amigos
                   <UsersRound className="ml-2 size-4 text-primary" />
                 </SheetTitle>
               </SheetHeader>

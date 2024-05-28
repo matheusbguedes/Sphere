@@ -31,7 +31,7 @@ export function Profile({ user }: { user: User }) {
         }}
         className="size-11 sm:size-12 rounded-full outline outline-2 outline-primary cursor-pointer"
       />
-      <span className="absolute bottom-0 right-0 sm:right-1 size-3 rounded-full border-2 border-zinc-900 bg-primary" />
+      <span className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-zinc-900 bg-primary" />
     </div>
   );
 }

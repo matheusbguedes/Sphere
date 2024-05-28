@@ -1,4 +1,4 @@
-import { Like } from "@prisma/client";
+import { Like, PostComment } from "@prisma/client";
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
@@ -29,6 +29,7 @@ export async function postsRoutes(app: FastifyInstance) {
       },
       include: {
         likes: true,
+        comments: true,
       },
     });
 
@@ -41,6 +42,7 @@ export async function postsRoutes(app: FastifyInstance) {
         content: string;
         postImageUrl: string | null;
         likes: Like[];
+        comments: PostComment[];
         createdAt: Date;
       }) => {
         return {
@@ -51,6 +53,7 @@ export async function postsRoutes(app: FastifyInstance) {
           content: post.content,
           postImageUrl: post.postImageUrl,
           likes: post.likes.length,
+          comments: post.comments.length,
           userIdLiked: post.likes,
           createdAt: post.createdAt,
         };
@@ -192,5 +195,24 @@ export async function postsRoutes(app: FastifyInstance) {
     });
 
     return like;
+  });
+
+  app.get("/post/comments/:id", async (request, reply) => {
+    const paramsSchema = z.object({
+      id: z.string().uuid(),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        comments: true,
+      },
+    });
+
+    return post!.comments;
   });
 }

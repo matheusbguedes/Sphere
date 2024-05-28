@@ -18,32 +18,7 @@ model User {
   following Friend[] @relation("following")
   posts     Post[]
   likes     Like[]
-}
-
-model Post {
-  id        String @id @default(uuid())
-  userId    String
-  userName  String
-  avatarUrl String
-
-  postImageUrl String?
-  content      String
-  createdAt    DateTime @default(now())
-
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  likes Like[]
-}
-
-model Like {
-  id        String @id @default(uuid())
-  userId    String
-  userName  String
-  avatarUrl String
-
-  postId String
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comments  PostComment[]
 }
 
 model Friend {
@@ -58,4 +33,45 @@ model Friend {
 
   @@index([follower], name: "follower")
   @@index([followed], name: "followed")
+}
+
+model Post {
+  id        String @id @default(uuid())
+  userId    String
+  userName  String
+  avatarUrl String
+
+  postImageUrl String?
+  content      String
+  createdAt    DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes      Like[]
+  comments   PostComment[]
+}
+
+model Like {
+  id        String @id @default(uuid())
+  userId    String
+  userName  String
+  avatarUrl String
+
+  postId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostComment {
+  id        String @id @default(uuid())
+  userId    String
+  userName  String
+  avatarUrl String
+
+  postId String
+  content String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }

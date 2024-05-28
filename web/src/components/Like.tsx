@@ -39,19 +39,25 @@ export function Like({ user, post }: { user: User; post: Posts }) {
   };
 
   return (
-    <div className="w-full flex gap-3 items-center">
-      <span
+    <div className="flex gap-1 items-center">
+      <div
         onClick={handlePostLike}
-        className={`flex cursor-pointer items-center text-sm transition-colors hover:text-primary ${
-          like ? "text-primary" : "text-zinc-500"
-        }`}
+        className="flex cursor-pointer items-center text-sm p-2 rounded-md text-zinc-600 hover:text-primary hover:bg-primary/10 transition-all"
       >
-        <Heart className="size-5" />
-      </span>
+        {like ? (
+          <Heart className="size-5 text-primary" />
+        ) : (
+          <Heart className="size-5" />
+        )}
+      </div>
 
       {post.likes > 0 && (
-        <p className="text-zinc-500 text-sm">
-          {post.likes} {post.likes == 1 ? "curtida" : "curtidas"}
+        <p
+          className={`text-primary text-sm ${
+            like ? "text-primary" : "text-zinc-500"
+          }`}
+        >
+          {post.likes}
         </p>
       )}
     </div>

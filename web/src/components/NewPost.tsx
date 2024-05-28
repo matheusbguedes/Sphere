@@ -4,7 +4,7 @@ import { useProvider } from "@/context/FeedContext";
 import { api } from "@/lib/api";
 import { User } from "@/types/User";
 import Cookie from "js-cookie";
-import { Camera, Trash2 } from "lucide-react";
+import { Camera, MapPin, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 
@@ -15,7 +15,9 @@ import { Input } from "./ui/input";
 
 export function NewPost({ user }: { user: User }) {
   const formRef = useRef<HTMLFormElement>(null);
+  const [content, setContent] = useState<string>();
   const [preview, setPreview] = useState<string | null>(null);
+
   const router = useRouter();
   const { getPosts } = useProvider();
 
@@ -37,29 +39,12 @@ export function NewPost({ user }: { user: User }) {
       postImageUrl = uploadResponse.data.fileUrl;
     }
 
-    const token = Cookie.get("token");
-
-    // Transforma a Data em string
-
     const formDataValue = formData.get("createData");
     const createdAt: Date = formDataValue
       ? new Date(Date.parse(formDataValue.toString()))
       : new Date();
 
-    const content = formData.get("content");
-
-    if (!postImageUrl && !content) {
-      return toast.error("Compartilhe algo!", {
-        style: {
-          background: "rgb(39 39 42)",
-          color: "rgb(161 161 170)",
-        },
-        iconTheme: {
-          primary: "#0066FF",
-          secondary: "rgb(39 39 42)",
-        },
-      });
-    }
+    const token = Cookie.get("token");
 
     await api.post(
       "/post",
@@ -128,9 +113,11 @@ export function NewPost({ user }: { user: User }) {
           className="size-12 rounded-full outline cursor-pointer outline-2 outline-primary"
         />
         <Input
-          name="content"
-          type="text"
           placeholder={`O que está acontecendo?`}
+          type="text"
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setContent(e.target.value)
+          }
         />
       </div>
 
@@ -150,27 +137,35 @@ export function NewPost({ user }: { user: User }) {
             alt=""
             className="aspect-video w-full rounded-lg object-cover shadow-sm"
           />
-          <Trash2
+          <span
+            className="absolute top-2 right-2 p-2 rounded-md cursor-pointer text-white bg-red-600/80 hover:bg-red-600"
             onClick={() => {
               if (formRef.current) {
                 formRef.current.reset();
                 setPreview(null);
               }
             }}
-            className="absolute top-2 right-2 size-5.5 p-1 cursor-pointer text-zinc-500  hover:hover:text-red-600"
-          />
+          >
+            <Trash2 className="size-4" />
+          </span>
         </div>
       )}
 
       <div className="w-full flex items-center justify-between pt-4 border-t-2 border-zinc-800">
-        <label
-          htmlFor="media"
-          className="flex cursor-pointer items-center text-sm p-1 text-zinc-400 hover:text-primary"
-        >
-          <Camera className="size-5" />
-        </label>
+        <div className="flex justify-center items-center gap-2">
+          <label
+            htmlFor="media"
+            className="flex cursor-pointer items-center text-sm p-2 rounded-md text-zinc-600 hover:text-primary hover:bg-primary/10 transition-colors"
+          >
+            <Camera className="size-5" />
+          </label>
 
-        <Button variant="outline" size={"sm"}>
+          <label className="flex cursor-pointer items-center text-sm p-2 rounded-md text-zinc-600 hover:text-primary hover:bg-primary/10 transition-colors">
+            <MapPin className="size-5" />
+          </label>
+        </div>
+
+        <Button variant="outline" size="sm" disabled={!content && !preview}>
           Compartilhar
         </Button>
       </div>

@@ -24,7 +24,7 @@ export function FriendCard({ friend }: { friend: Friend }) {
 
     getNonFriends();
 
-    return toast.success(`Você deixou de seguir ${friend.name.split(" ")[0]}`, {
+    return toast.success(`Deixou de seguir ${friend.name.split(" ")[0]}`, {
       style: {
         background: "rgb(39 39 42)",
         color: "rgb(161 161 170)",

@@ -2,11 +2,20 @@
 
 import { useProvider } from "@/context/FeedContext";
 import { User } from "@/types/User";
-import { CircleDashed } from "lucide-react";
+import { HeartCrack, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { CardPost } from "./CardPost";
 
 export default function PostsList({ user }: { user: User }) {
   const { posts } = useProvider();
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  });
 
   return (
     <>
@@ -16,12 +25,18 @@ export default function PostsList({ user }: { user: User }) {
         })
       ) : (
         <div className="h-screen flex flex-1 flex-col items-center justify-center gap-2">
-          <span className="text-primary animate-pulse">
-            <CircleDashed className="size-7" />
-          </span>
-          <p className="text-lg font-medium text-zinc-600 ">
-            Nenhuma publicação
-          </p>
+          {isLoading ? (
+            <Loader2 className="size-8 text-primary animate-spin" />
+          ) : (
+            <>
+              <span className="text-primary">
+                <HeartCrack className="size-6" />
+              </span>
+              <p className="text-lg font-medium text-zinc-600 ">
+                Seu feed está <span className="text-primary">vazio</span>.
+              </p>
+            </>
+          )}
         </div>
       )}
     </>

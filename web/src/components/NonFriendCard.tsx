@@ -28,7 +28,7 @@ export function NonFriendCard({ friend }: { friend: NonFriend }) {
 
     getNonFriends();
 
-    return toast.success(`Você começou a seguir ${friend.name.split(" ")[0]}`, {
+    return toast.success(`Começou a seguir ${friend.name.split(" ")[0]}`, {
       style: {
         background: "rgb(39 39 42)",
         color: "rgb(161 161 170)",

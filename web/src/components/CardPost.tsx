@@ -6,12 +6,16 @@ import { api } from "@/lib/api";
 import { Posts } from "@/types/Posts";
 import { User } from "@/types/User";
 import dayjs from "dayjs";
+import "dayjs/locale/pt-br";
 import Cookie from "js-cookie";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { PostComments } from "./Comment";
 import { Like } from "./Like";
+
+dayjs.locale("pt-br");
 
 export function CardPost({ user, post }: { user: User; post: Posts }) {
   const token = Cookie.get("token");
@@ -60,16 +64,18 @@ export function CardPost({ user, post }: { user: User; post: Posts }) {
               {post.userName}
             </p>
             <p className="max-w-[140px] text-zinc-500 text-sm">
-              {dayjs(post.createdAt).format("D[ de ]MMM")}
+              {dayjs(post.createdAt).format("D [de] MMMM")}
             </p>
           </div>
         </div>
 
         {post.userId == user.sub && (
-          <Trash2
+          <span
+            className="p-2 rounded-md cursor-pointer text-zinc-600 hover:text-red-600 hover:bg-red-600/20"
             onClick={handlePostDelete}
-            className="size-5.5 p-1 cursor-pointer text-zinc-500  hover:hover:text-red-600"
-          />
+          >
+            <Trash2 className="size-4" />
+          </span>
         )}
       </div>
 
@@ -88,7 +94,10 @@ export function CardPost({ user, post }: { user: User; post: Posts }) {
         />
       )}
 
-      <Like user={user} post={post} />
+      <div className="w-full flex items-center gap-4">
+        <Like user={user} post={post} />
+        <PostComments user={user} post={post} />
+      </div>
     </div>
   );
 }
