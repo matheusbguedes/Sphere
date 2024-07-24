@@ -7,7 +7,7 @@ import * as React from "react";
 
 import { FeedProvider } from "@/context/FeedContext";
 import { cn } from "@/lib/utils";
-import Friends from "../Friends";
+import FriendsList from "../friendsList";
 
 const Sheet = SheetPrimitive.Root;
 
@@ -73,7 +73,7 @@ const SheetContent = React.forwardRef<
           <span className="sr-only">Close</span>
         </SheetPrimitive.Close>
 
-        <Friends />
+        <FriendsList />
       </FeedProvider>
     </SheetPrimitive.Content>
   </SheetPortal>

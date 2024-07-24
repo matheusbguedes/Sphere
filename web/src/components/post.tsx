@@ -12,12 +12,12 @@ import { Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { PostComments } from "./Comment";
-import { Like } from "./Like";
+import { Comments } from "./comments";
+import { Likes } from "./likes";
 
 dayjs.locale("pt-br");
 
-export function CardPost({ user, post }: { user: User; post: Posts }) {
+export function Post({ user, post }: { user: User; post: Posts }) {
   const token = Cookie.get("token");
   const router = useRouter();
   const { getPosts } = useProvider();
@@ -95,8 +95,8 @@ export function CardPost({ user, post }: { user: User; post: Posts }) {
       )}
 
       <div className="w-full flex items-center gap-4">
-        <Like user={user} post={post} />
-        <PostComments user={user} post={post} />
+        <Likes user={user} post={post} />
+        <Comments user={user} post={post} />
       </div>
     </div>
   );

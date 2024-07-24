@@ -9,7 +9,7 @@ import Cookie from "js-cookie";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 
-export function Like({ user, post }: { user: User; post: Posts }) {
+export function Likes({ user, post }: { user: User; post: Posts }) {
   const isLiked = post.userIdLiked.some(
     (userLike) => userLike.userId === user.sub
   );
@@ -51,15 +51,13 @@ export function Like({ user, post }: { user: User; post: Posts }) {
         )}
       </div>
 
-      {post.likes > 0 && (
-        <p
-          className={`text-primary text-sm ${
-            like ? "text-primary" : "text-zinc-500"
-          }`}
-        >
-          {post.likes}
-        </p>
-      )}
+      <p
+        className={`text-primary text-sm font-medium text-nowrap ${
+          like ? "text-primary" : "text-zinc-500"
+        }`}
+      >
+        {post.likes}
+      </p>
     </div>
   );
 }

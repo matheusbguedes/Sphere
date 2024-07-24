@@ -3,8 +3,8 @@
 import { FeedProvider } from "@/context/FeedContext";
 import { User } from "@/types/User";
 
-import { NewPost } from "./NewPost";
-import PostsList from "./PostsList";
+import { NewPost } from "./newPost";
+import PostsList from "./postsList";
 
 export default function Feed({ user }: { user: User }) {
   return (

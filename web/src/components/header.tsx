@@ -6,17 +6,17 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { getUser } from "@/lib/auth";
-import { UsersRound } from "lucide-react";
+import { User } from "@/types/User";
+import { LogOut, UsersRound } from "lucide-react";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import { Profile } from "./Profile";
-import { SignIn } from "./SignIn";
+import { SignIn } from "./signIn";
 import { Button } from "./ui/button";
 import sphere from "/public/sphere-logo.svg";
 
 export function Header() {
   const isAuthenticated = cookies().has("token");
-  let user;
+  let user: User;
 
   if (isAuthenticated) {
     user = getUser();
@@ -52,7 +52,28 @@ export function Header() {
             </SheetContent>
           </Sheet>
 
-          <Profile user={user!} />
+          <div className="flex items-center gap-4 text-right relative">
+            <div className="flex flex-col items-end text-right gap-1">
+              <p className="max-w-[140px] text-zinc-400 text-sm">
+                {user!.name}
+              </p>
+              <a
+                href="/api/auth/logout"
+                className="flex items-center gap-2 text-sm text-zinc-500  transition-colors hover:hover:text-red-600"
+              >
+                sair <LogOut className="size-3" />
+              </a>
+            </div>
+
+            <Image
+              src={user!.avatarUrl}
+              width={60}
+              height={60}
+              draggable={false}
+              alt="profile-image"
+              className="size-11 sm:size-12 rounded-full outline outline-2 outline-primary"
+            />
+          </div>
         </div>
       ) : (
         <SignIn />

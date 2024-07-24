@@ -6,7 +6,7 @@ import { useProvider } from "@/context/ProfileContext";
 import { api } from "@/lib/api";
 import { User } from "@/types/User";
 import Cookie from "js-cookie";
-import { ArrowLeft, CircleDashed, UserPlus, UserRoundX } from "lucide-react";
+import { ArrowLeft, UserPlus, UserRoundX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -34,19 +34,16 @@ export default function Profile({ user }: { user: User }) {
 
     getProfile();
 
-    return toast.success(
-      `Você começou a seguir ${profile.name.split(" ")[0]}`,
-      {
-        style: {
-          background: "rgb(39 39 42)",
-          color: "rgb(161 161 170)",
-        },
-        iconTheme: {
-          primary: "#0066FF",
-          secondary: "rgb(39 39 42)",
-        },
-      }
-    );
+    return toast.success(`Você adicionou ${profile.name.split(" ")[0]}`, {
+      style: {
+        background: "rgb(39 39 42)",
+        color: "rgb(161 161 170)",
+      },
+      iconTheme: {
+        primary: "#0066FF",
+        secondary: "rgb(39 39 42)",
+      },
+    });
   };
 
   const handleRemoveFriend = async () => {
@@ -59,19 +56,16 @@ export default function Profile({ user }: { user: User }) {
 
     getProfile();
 
-    return toast.success(
-      `Você deixou de seguir ${profile.name.split(" ")[0]}`,
-      {
-        style: {
-          background: "rgb(39 39 42)",
-          color: "rgb(161 161 170)",
-        },
-        iconTheme: {
-          primary: "#0066FF",
-          secondary: "rgb(39 39 42)",
-        },
-      }
-    );
+    return toast.success(`Você removeu ${profile.name.split(" ")[0]}`, {
+      style: {
+        background: "rgb(39 39 42)",
+        color: "rgb(161 161 170)",
+      },
+      iconTheme: {
+        primary: "#0066FF",
+        secondary: "rgb(39 39 42)",
+      },
+    });
   };
 
   return (
@@ -130,13 +124,22 @@ export default function Profile({ user }: { user: User }) {
         )}
       </div>
 
-      {profile.postsCount == 0 && (
+      {profile.postsCount == 0 && profile.id == user.sub && (
         <div className="h-full flex flex-1 flex-col items-center justify-center gap-2">
-          <span className="text-primary animate-pulse">
-            <CircleDashed className="size-5" />
+          <span className=" text-base text-primary">Sem postagens ainda?</span>
+          <p className="text-sm font-medium text-zinc-600 ">
+            Hora de deixar sua marca na esfera. Publique algo!
+          </p>
+        </div>
+      )}
+
+      {profile.postsCount == 0 && profile.id != user.sub && (
+        <div className="h-full flex flex-1 flex-col items-center justify-center gap-2">
+          <span className=" text-base text-primary">
+            {profile.name.trim()}, não fala muito.
           </span>
-          <p className="text-base font-medium text-zinc-600 ">
-            Nenhuma publicação
+          <p className="text-sm font-medium text-zinc-600 ">
+            Esse perfil ainda não compartilhou nada com a esfera!
           </p>
         </div>
       )}

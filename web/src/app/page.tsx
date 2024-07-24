@@ -1,9 +1,9 @@
-import Feed from "@/components/Feed";
-import { NotAuthenticated } from "@/components/NotAuthenticated";
+import Feed from "@/components/feed";
+import { NotAuthenticated } from "@/components/notAuthenticated";
 import { getUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { Toaster } from "react-hot-toast";
-import { Header } from "../components/Header";
+import { Header } from "../components/header";
 
 export default function Home() {
   const isAuthenticated = cookies().has("token");

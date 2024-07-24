@@ -1,15 +1,46 @@
 import { useProvider } from "@/context/FeedContext";
 import { api } from "@/lib/api";
-import { NonFriend } from "@/types/Friend";
+import { Friend } from "@/types/Friend";
 import Cookie from "js-cookie";
-import { UserRoundPlus } from "lucide-react";
+import { CirclePlus, CircleX } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export function NonFriendCard({ friend }: { friend: NonFriend }) {
-  const { getFriends, getNonFriends } = useProvider();
+export function FriendCard({
+  friend,
+  isFriend = false,
+}: {
+  friend: Friend;
+  isFriend?: boolean;
+}) {
+  const { getFriends, getSugestions } = useProvider();
+
   const router = useRouter();
+
+  const handleRemoveFriend = async () => {
+    const token = Cookie.get("token");
+    await api.delete(`/friend/remove/${friend.id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    getFriends();
+    getSugestions();
+
+    return toast.success(`Você removeu ${friend.name.split(" ")[0]}`, {
+      style: {
+        background: "rgb(39 39 42)",
+        color: "rgb(161 161 170)",
+      },
+      iconTheme: {
+        primary: "#0066FF",
+        secondary: "rgb(39 39 42)",
+      },
+    });
+  };
 
   const handleAddFriend = async () => {
     const token = Cookie.get("token");
@@ -25,10 +56,9 @@ export function NonFriendCard({ friend }: { friend: NonFriend }) {
     );
 
     getFriends();
+    getSugestions();
 
-    getNonFriends();
-
-    return toast.success(`Começou a seguir ${friend.name.split(" ")[0]}`, {
+    return toast.success(`Vocẽ adicionou ${friend.name.split(" ")[0]}`, {
       style: {
         background: "rgb(39 39 42)",
         color: "rgb(161 161 170)",
@@ -50,7 +80,7 @@ export function NonFriendCard({ friend }: { friend: NonFriend }) {
           draggable={false}
           alt="avatar-image"
           onClick={() => {
-            router.push(`/user/${friend.id}`);
+            router.push(`/user/${friend.userId}`);
           }}
           className="size-12 rounded-full hover:outline outline-2 outline-primary cursor-pointer"
         />
@@ -58,10 +88,17 @@ export function NonFriendCard({ friend }: { friend: NonFriend }) {
         <p className="max-w-[140px] text-zinc-400 text-base">{friend.name}</p>
       </div>
 
-      <UserRoundPlus
-        onClick={handleAddFriend}
-        className="size-6 p-1 cursor-pointer text-zinc-500 transition-colors hover:hover:text-primary"
-      />
+      {isFriend ? (
+        <CircleX
+          onClick={handleRemoveFriend}
+          className="size-6 cursor-pointer transition-colors text-zinc-500 hover:hover:text-red-600"
+        />
+      ) : (
+        <CirclePlus
+          onClick={handleAddFriend}
+          className="size-8 p-1 cursor-pointer text-zinc-500 transition-colors hover:hover:text-primary"
+        />
+      )}
     </div>
   );
 }

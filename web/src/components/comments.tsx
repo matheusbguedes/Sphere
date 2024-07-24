@@ -15,15 +15,18 @@ import { Check, MessageCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
+import toast from "react-hot-toast";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-export function PostComments({ user, post }: { user: User; post: Posts }) {
+export function Comments({ user, post }: { user: User; post: Posts }) {
   const [comments, setComments] = useState<PostComment[]>();
+  const [content, setContent] = useState("");
 
   const router = useRouter();
 
   const token = Cookie.get("token");
+
   const getComments = async () => {
     try {
       const response = await api.get(`/post/comments/${post.id}`, {
@@ -37,6 +40,49 @@ export function PostComments({ user, post }: { user: User; post: Posts }) {
     } catch (error) {}
   };
 
+  const handleCreateComment = async () => {
+    try {
+      const response = await api.post(
+        `/post/comments/${post.id}`,
+        {
+          postId: post.id,
+          userId: user.sub,
+          userName: user.name,
+          avatarUrl: user.avatarUrl,
+          content,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      toast.success("Seu comentário foi salvo", {
+        style: {
+          background: "rgb(39 39 42)",
+          color: "rgb(161 161 170)",
+        },
+        iconTheme: {
+          primary: "#0066FF",
+          secondary: "rgb(39 39 42)",
+        },
+      });
+    } catch (error) {
+      toast.error("Erro ao salvar comentário", {
+        style: {
+          background: "rgb(39 39 42)",
+          color: "rgb(161 161 170)",
+        },
+        iconTheme: {
+          primary: "#0066FF",
+          secondary: "rgb(39 39 42)",
+        },
+      });
+    }
+  };
+
   return (
     <div className="w-full flex gap-1 items-center">
       <Dialog>
@@ -45,7 +91,7 @@ export function PostComments({ user, post }: { user: User; post: Posts }) {
             <MessageCircle className="size-5" />
           </div>
         </DialogTrigger>
-        <DialogContent className="bg-zinc-900 border-none">
+        <DialogContent className="bg-zinc-900 border-none max-h-[500px] overflow-scroll scrollbar">
           <DialogHeader>
             <DialogTitle className="text-zinc-400">Comentários</DialogTitle>
           </DialogHeader>
@@ -67,10 +113,15 @@ export function PostComments({ user, post }: { user: User; post: Posts }) {
                 placeholder="Faça um comentário"
                 type="text"
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  console.log(e.target.value)
+                  setContent(e.target.value)
                 }
               />
-              <Button variant="outline" className="p-2">
+              <Button
+                onClick={handleCreateComment}
+                disabled={!content}
+                variant="outline"
+                className="p-2"
+              >
                 <Check className="size-5" />
               </Button>
             </div>
@@ -118,9 +169,7 @@ export function PostComments({ user, post }: { user: User; post: Posts }) {
         </DialogContent>
       </Dialog>
 
-      {post.comments > 0 && (
-        <p className={`text-zinc-500 text-sm`}>{post.comments}</p>
-      )}
+      <p className="text-zinc-500 text-sm font-medium">{post.comments}</p>
     </div>
   );
 }

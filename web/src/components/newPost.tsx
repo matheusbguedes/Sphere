@@ -4,7 +4,7 @@ import { useProvider } from "@/context/FeedContext";
 import { api } from "@/lib/api";
 import { User } from "@/types/User";
 import Cookie from "js-cookie";
-import { Camera, MapPin, Trash2 } from "lucide-react";
+import { Camera, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 
@@ -14,12 +14,13 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 export function NewPost({ user }: { user: User }) {
-  const formRef = useRef<HTMLFormElement>(null);
-  const [content, setContent] = useState<string>();
-  const [preview, setPreview] = useState<string | null>(null);
+  const { getPosts } = useProvider();
 
   const router = useRouter();
-  const { getPosts } = useProvider();
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const [content, setContent] = useState<string>();
+  const [preview, setPreview] = useState<string | null>(null);
 
   async function handleCreatePost(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -67,6 +68,8 @@ export function NewPost({ user }: { user: User }) {
       formRef.current.reset();
       setPreview(null);
     }
+
+    setContent("");
 
     toast.success("Você criou uma publicação!", {
       style: {
@@ -158,10 +161,6 @@ export function NewPost({ user }: { user: User }) {
             className="flex cursor-pointer items-center text-sm p-2 rounded-md text-zinc-600 hover:text-primary hover:bg-primary/10 transition-colors"
           >
             <Camera className="size-5" />
-          </label>
-
-          <label className="flex cursor-pointer items-center text-sm p-2 rounded-md text-zinc-600 hover:text-primary hover:bg-primary/10 transition-colors">
-            <MapPin className="size-5" />
           </label>
         </div>
 

@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import { Friend, NonFriend } from "@/types/Friend";
+import { Friend } from "@/types/Friend";
 import { Posts } from "@/types/Posts";
 import Cookie from "js-cookie";
 import React, {
@@ -12,11 +12,11 @@ import React, {
 
 type FeedContextValue = {
   friends: Friend[];
-  nonFriends: NonFriend[];
+  sugestions: Friend[];
   posts: Posts[];
   getPosts: () => Promise<void>;
   getFriends: () => Promise<void>;
-  getNonFriends: () => Promise<void>;
+  getSugestions: () => Promise<void>;
 };
 
 export const FeedContext = createContext<FeedContextValue | undefined>(
@@ -28,7 +28,7 @@ export const FeedProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [posts, setPosts] = useState<Posts[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
-  const [nonFriends, setNonFriends] = useState<NonFriend[]>([]);
+  const [sugestions, setSugestions] = useState<Friend[]>([]);
 
   const token = Cookie.get("token");
 
@@ -52,30 +52,30 @@ export const FeedProvider: React.FC<{ children: ReactNode }> = ({
     setFriends(response.data);
   };
 
-  const getNonFriends = async () => {
+  const getSugestions = async () => {
     const response = await api.get<Friend[]>("/non-friends", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    setNonFriends(response.data);
+    setSugestions(response.data);
   };
 
   useEffect(() => {
     getPosts();
     getFriends();
-    getNonFriends();
+    getSugestions();
   }, []);
 
   return (
     <FeedContext.Provider
       value={{
         friends,
-        nonFriends,
+        sugestions,
         posts,
         getFriends,
-        getNonFriends,
+        getSugestions,
         getPosts,
       }}
     >
