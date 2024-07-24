@@ -14,7 +14,7 @@
     "dotenv": "^16.0.3",
     "eslint": "^8.40.0",
     "prisma": "^4.14.0",
-    "tsx": "^3.12.7",
+    "tsx": "^3.14.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {

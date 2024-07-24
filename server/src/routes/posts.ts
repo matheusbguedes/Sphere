@@ -197,6 +197,8 @@ export async function postsRoutes(app: FastifyInstance) {
     return like;
   });
 
+  // Comments
+
   app.get("/post/comments/:id", async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string().uuid(),
@@ -214,5 +216,36 @@ export async function postsRoutes(app: FastifyInstance) {
     });
 
     return post!.comments;
+  });
+
+  app.post("/post/comments/:id", async (request, reply) => {
+    const paramsSchema = z.object({
+      id: z.string().uuid(),
+    });
+
+    const bodySchema = z.object({
+      content: z.string(),
+      userId: z.string(),
+      userName: z.string(),
+      avatarUrl: z.string(),
+    });
+
+    const { content, userId, userName, avatarUrl } = bodySchema.parse(
+      request.body
+    );
+
+    const { id } = paramsSchema.parse(request.params);
+
+    const comment = await prisma.postComment.create({
+      data: {
+        postId: id,
+        userId,
+        userName,
+        avatarUrl,
+        content,
+      },
+    });
+
+    return comment;
   });
 }
