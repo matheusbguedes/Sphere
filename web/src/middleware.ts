@@ -17,5 +17,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: "/friends/:path*",
+  matcher: "/post/:path*",
 };

@@ -1,27 +1,10 @@
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { getUser } from "@/lib/auth";
-import { User } from "@/types/User";
+import { IUser } from "@/types/User";
 import { LogOut, UsersRound } from "lucide-react";
-import { cookies } from "next/headers";
 import Image from "next/image";
-import { SignIn } from "./signIn";
 import { Button } from "./ui/button";
 import sphere from "/public/sphere-logo.svg";
 
-export function Header() {
-  const isAuthenticated = cookies().has("token");
-  let user: User;
-
-  if (isAuthenticated) {
-    user = getUser();
-  }
-
+export function Header({ user }: { user: IUser }) {
   return (
     <div className="w-full flex items-center justify-between p-4 sm:px-10 fixed top-0 border-b-2 border-zinc-800 bg-zinc-900 z-50">
       <div className="flex items-center justify-center gap-4">
@@ -33,24 +16,12 @@ export function Header() {
         />
       </div>
 
-      {isAuthenticated ? (
+      {user && (
         <div className="flex items-center justify-center gap-5 md:gap-12 ">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="link">
-                Amigos
-                <UsersRound className="ml-2 size-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="max-h-screen bg-zinc-900">
-              <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-zinc-400">
-                  Amigos
-                  <UsersRound className="ml-2 size-4 text-primary" />
-                </SheetTitle>
-              </SheetHeader>
-            </SheetContent>
-          </Sheet>
+          <Button variant="link">
+            Amigos
+            <UsersRound className="ml-2 size-4" />
+          </Button>
 
           <div className="flex items-center gap-4 text-right relative">
             <div className="flex flex-col items-end text-right gap-1">
@@ -75,8 +46,6 @@ export function Header() {
             />
           </div>
         </div>
-      ) : (
-        <SignIn />
       )}
     </div>
   );

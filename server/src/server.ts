@@ -6,7 +6,7 @@ import multipart from "@fastify/multipart";
 import fastify from "fastify";
 import { resolve } from "node:path";
 import { authRoutes } from "./routes/auth";
-import { friendsRoutes } from "./routes/friends";
+import { friendRoutes } from "./routes/friends";
 import { postsRoutes } from "./routes/posts";
 import { profileRoutes } from "./routes/profile";
 import { uploadRoutes } from "./routes/upload";
@@ -25,14 +25,14 @@ app.register(cors, {
 });
 
 app.register(jwt, {
-  secret: "sphere",
+  secret: "sphere-api-94cb44d5-ae9c-456e",
 });
 
 app.register(authRoutes);
 app.register(uploadRoutes);
-app.register(postsRoutes);
-app.register(profileRoutes);
-app.register(friendsRoutes);
+app.register(postsRoutes, { prefix: "/post" });
+app.register(profileRoutes, { prefix: "/profile" });
+app.register(friendRoutes, { prefix: "/friend" });
 
 app
   .listen({
@@ -40,5 +40,5 @@ app
     host: "0.0.0.0",
   })
   .then(() => {
-    console.log("🚀 HTTP server running on port http://localhost:3333");
+    console.log("Server is up! 🚀");
   });

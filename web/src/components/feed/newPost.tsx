@@ -1,21 +1,17 @@
 "use client";
 
-import { useProvider } from "@/context/FeedContext";
-import { api } from "@/lib/api";
-import { User } from "@/types/User";
-import Cookie from "js-cookie";
+import api from "@/lib/api";
+import { IUser } from "@/types/User";
 import { Camera, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
-export function NewPost({ user }: { user: User }) {
-  const { getPosts } = useProvider();
-
+export function NewPost({ user }: { user: IUser }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -25,64 +21,43 @@ export function NewPost({ user }: { user: User }) {
   async function handleCreatePost(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    try {
+      const formData = new FormData(event.currentTarget);
 
-    const fileToUpload = formData.get("postImageUrl");
+      const fileToUpload = formData.get("postImageUrl");
 
-    let postImageUrl = "";
+      let postImageUrl = "";
 
-    if (fileToUpload instanceof File && fileToUpload.size > 0) {
-      const uploadFormData = new FormData();
-      uploadFormData.set("file", fileToUpload);
+      if (fileToUpload instanceof File && fileToUpload.size > 0) {
+        const uploadFormData = new FormData();
+        uploadFormData.set("file", fileToUpload);
 
-      const uploadResponse = await api.post("/upload", uploadFormData);
+        const uploadResponse = await api.post("/upload", uploadFormData);
 
-      postImageUrl = uploadResponse.data.fileUrl;
-    }
+        postImageUrl = uploadResponse.data.fileUrl;
+      }
 
-    const formDataValue = formData.get("createData");
-    const createdAt: Date = formDataValue
-      ? new Date(Date.parse(formDataValue.toString()))
-      : new Date();
+      const formDataValue = formData.get("createData");
+      const createdAt: Date = formDataValue
+        ? new Date(Date.parse(formDataValue.toString()))
+        : new Date();
 
-    const token = Cookie.get("token");
-
-    await api.post(
-      "/post",
-      {
+      await api.post("/post", {
         content,
         postImageUrl,
-        userName: user.name,
-        avatarUrl: user.avatarUrl,
         createdAt,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+      });
+
+      setContent("");
+      if (formRef.current) {
+        formRef.current.reset();
+        setPreview(null);
       }
-    );
 
-    if (formRef.current) {
-      formRef.current.reset();
-      setPreview(null);
+      return toast.success("Você criou uma publicação!");
+    } catch (error) {
+      toast.error("Erro ao criar publicação");
     }
-
-    setContent("");
-
-    toast.success("Você criou uma publicação!", {
-      style: {
-        background: "rgb(39 39 42)",
-        color: "rgb(161 161 170)",
-      },
-      iconTheme: {
-        primary: "#0066FF",
-        secondary: "rgb(39 39 42)",
-      },
-    });
-
-    return getPosts();
   }
 
   function onFileSelected(event: ChangeEvent<HTMLInputElement>) {
@@ -111,7 +86,7 @@ export function NewPost({ user }: { user: User }) {
           draggable={false}
           alt="profile-image"
           onClick={() => {
-            router.push(`/user/${user.sub}`);
+            router.push(`/profile/${user.sub}`);
           }}
           className="size-12 rounded-full outline cursor-pointer outline-2 outline-primary"
         />

@@ -1,6 +1,6 @@
 # Esphere
 
-Esphere é um projeto acadêmico onde os participantes podem escolher as tecnologias e criar um projeto funcional.
+Sphere é um projeto acadêmico onde os participantes podem escolher as tecnologias e criar um projeto funcional.
 
 ## 🚀 Começando
 

@@ -1,17 +1,17 @@
 import { useProvider } from "@/context/FeedContext";
-import { api } from "@/lib/api";
-import { Friend } from "@/types/Friend";
+import api from "@/lib/api";
+import { IFriend } from "@/types/Friend";
 import Cookie from "js-cookie";
 import { CirclePlus, CircleX } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export function FriendCard({
+export function Friend({
   friend,
   isFriend = false,
 }: {
-  friend: Friend;
+  friend: IFriend;
   isFriend?: boolean;
 }) {
   const { getFriends, getSugestions } = useProvider();
@@ -30,44 +30,21 @@ export function FriendCard({
     getFriends();
     getSugestions();
 
-    return toast.success(`Você removeu ${friend.name.split(" ")[0]}`, {
-      style: {
-        background: "rgb(39 39 42)",
-        color: "rgb(161 161 170)",
-      },
-      iconTheme: {
-        primary: "#0066FF",
-        secondary: "rgb(39 39 42)",
-      },
-    });
+    return toast.success(`Você removeu ${friend.name.split(" ")[0]}`);
   };
 
   const handleAddFriend = async () => {
     const token = Cookie.get("token");
-    await api.post(
-      `/friend/add`,
-      { id: friend.id, userName: friend.name, avatarUrl: friend.avatarUrl },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    await api.post(`/friend/add`, {
+      id: friend.id,
+      userName: friend.name,
+      avatarUrl: friend.avatarUrl,
+    });
 
     getFriends();
     getSugestions();
 
-    return toast.success(`Vocẽ adicionou ${friend.name.split(" ")[0]}`, {
-      style: {
-        background: "rgb(39 39 42)",
-        color: "rgb(161 161 170)",
-      },
-      iconTheme: {
-        primary: "#0066FF",
-        secondary: "rgb(39 39 42)",
-      },
-    });
+    return toast.success(`Vocẽ adicionou ${friend.name.split(" ")[0]}`);
   };
 
   return (
@@ -80,7 +57,7 @@ export function FriendCard({
           draggable={false}
           alt="avatar-image"
           onClick={() => {
-            router.push(`/user/${friend.userId}`);
+            router.push(`/profile/${friend.userId}`);
           }}
           className="size-12 rounded-full hover:outline outline-2 outline-primary cursor-pointer"
         />

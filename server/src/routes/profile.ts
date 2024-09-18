@@ -7,7 +7,7 @@ export async function profileRoutes(app: FastifyInstance) {
     await request.jwtVerify();
   });
 
-  app.get("/profile/:id", async (request) => {
+  app.get("/:id", async (request, response) => {
     const paramsSchema = z.object({
       id: z.string().uuid(),
     });
@@ -20,11 +20,14 @@ export async function profileRoutes(app: FastifyInstance) {
       },
       include: {
         posts: true,
-        likes: true,
         followers: true,
         following: true,
       },
     });
+
+    if (!user) {
+      return response.status(404).send({ error: "User not found" });
+    }
 
     const findFriend = await prisma.friend.findFirst({
       where: {
@@ -36,15 +39,14 @@ export async function profileRoutes(app: FastifyInstance) {
     const isFriend = !!findFriend;
 
     return {
-      id: user!.id,
-      name: user!.name,
-      avatarUrl: user!.avatarUrl,
+      id: user.id,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
       isFriend,
       friendshipId: findFriend?.id,
-      postsCount: user!.posts.length,
-      likesCount: user!.likes.length,
-      followersCount: user!.followers.length,
-      followingCount: user!.following.length,
+      postsCount: user.posts.length,
+      followersCount: user.followers.length,
+      followingCount: user.following.length,
     };
   });
 }
