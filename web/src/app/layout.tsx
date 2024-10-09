@@ -1,5 +1,9 @@
+import { FeedProvider } from "@/context/feedContext";
+import { UserProvider } from "@/context/userContext";
+import { getUser } from "@/lib/auth";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { cookies } from "next/headers";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
@@ -15,10 +19,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let user;
+  const hasCookie = cookies().has("token");
+
+  if (hasCookie) {
+    user = getUser();
+  }
+
   return (
     <html lang="pt-br">
       <body className={inter.className}>
-        {children}
+        <UserProvider loggedUser={user!}>
+          <FeedProvider>{children}</FeedProvider>
+        </UserProvider>
+
         <Toaster
           position="bottom-center"
           toastOptions={{

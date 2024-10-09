@@ -22,7 +22,7 @@ export function Comment({ comment }: { comment: IComment }) {
           onClick={() => {
             router.push(`/profile/${comment.userId}`);
           }}
-          className="size-10 rounded-full outline cursor-pointer hover:outline-2 hover:outline-primary outline-none"
+          className="size-10 rounded-full cursor-pointer outline hover:outline-2 hover:outline-primary"
         />
         <div className="flex flex-col gap-2">
           <div className="flex flex-col bg-zinc-800 bg-opacity-20 py-3 px-4 rounded-lg">

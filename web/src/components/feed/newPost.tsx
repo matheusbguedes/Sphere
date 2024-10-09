@@ -1,17 +1,21 @@
 "use client";
 
 import api from "@/lib/api";
-import { IUser } from "@/types/User";
 import { Camera, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 
+import { useFeed } from "@/context/feedContext";
+import { useUser } from "@/context/userContext";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-export function NewPost({ user }: { user: IUser }) {
+export function NewPost() {
+  const { user } = useUser();
+  const { refreshPosts } = useFeed();
+
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -54,7 +58,9 @@ export function NewPost({ user }: { user: IUser }) {
         setPreview(null);
       }
 
-      return toast.success("Você criou uma publicação!");
+      toast.success("Você criou uma publicação!");
+
+      return refreshPosts();
     } catch (error) {
       toast.error("Erro ao criar publicação");
     }
@@ -88,7 +94,7 @@ export function NewPost({ user }: { user: IUser }) {
           onClick={() => {
             router.push(`/profile/${user.sub}`);
           }}
-          className="size-12 rounded-full outline cursor-pointer outline-2 outline-primary"
+          className="size-12 rounded-full cursor-pointer outline hover:outline-2 hover:outline-primary"
         />
         <Input
           placeholder={`O que está acontecendo?`}

@@ -2,13 +2,12 @@
 
 import api from "@/lib/api";
 import { IPost } from "@/types/Post";
-import { IUser } from "@/types/User";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export function Like({ user, post }: { user: IUser; post: IPost }) {
-  const [isLiked, setIsLiked] = useState(false); // To-do: use isLikedByUser from API
+export function Like({ post }: { post: IPost }) {
+  const [isLiked, setIsLiked] = useState(post.isLikedByUser);
   const [likesCount, setLikesCount] = useState(post.likesCount);
 
   const handlePostLike = async () => {
@@ -18,7 +17,7 @@ export function Like({ user, post }: { user: IUser; post: IPost }) {
       setIsLiked((prevLiked: boolean) => !prevLiked);
       setLikesCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
     } catch (error) {
-      toast.error("Erro ao curtir postagem");
+      toast.error("Houve um erro, tente novamente!");
     }
   };
 

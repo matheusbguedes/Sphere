@@ -25,7 +25,10 @@ function Skeleton({
       <div className="w-96 h-4 bg-zinc-800 rounded" />
       <div className="w-full aspect-video bg-zinc-800 rounded-lg" />
 
-      <div className="w-full flex pb-2 border-b-2 border-zinc-800" />
+      <div className="w-full flex gap-4 pb-3 border-b-2 border-zinc-800">
+        <div className="size-7 rounded bg-zinc-800" />
+        <div className="size-7 rounded bg-zinc-800" />
+      </div>
 
       <div className="w-full flex items-center gap-3 pt-1">
         <div className="size-10 rounded-full bg-zinc-800" />

@@ -2,9 +2,10 @@
 
 import api from "@/lib/api";
 
+import { useFeed } from "@/context/feedContext";
+import { useUser } from "@/context/userContext";
 import { IComment } from "@/types/Comment";
 import { IPost } from "@/types/Post";
-import { IUser } from "@/types/User";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
 import { MessageSquare, MessagesSquare, Trash2 } from "lucide-react";
@@ -19,17 +20,22 @@ import { Like } from "./like";
 
 dayjs.locale("pt-br");
 
-export function Post({ user, post }: { user: IUser; post: IPost }) {
+export function Post({ post }: { post: IPost }) {
+  const { user } = useUser();
+  const { refreshPosts } = useFeed();
   const router = useRouter();
 
   const [comment, setComment] = useState("");
   const [userComments, setUserComments] = useState<IComment[]>();
 
+  const [commentCount, setCommentCount] = useState(post.commentsCount);
+
   const handlePostDelete = async () => {
     try {
       await api.delete(`/post/${post.id}`);
+      toast.success("Sua publicação foi excluida!");
 
-      return toast.success("Sua publicação foi excluida!");
+      return refreshPosts();
     } catch {
       toast.error("Erro ao excluir publicação");
     }
@@ -48,6 +54,8 @@ export function Post({ user, post }: { user: IUser; post: IPost }) {
         ...(prevComments || []),
         response.data,
       ]);
+
+      return setCommentCount(commentCount + 1);
     } catch (error) {
       toast.error("Erro ao salvar comentário");
     }
@@ -66,7 +74,7 @@ export function Post({ user, post }: { user: IUser; post: IPost }) {
             onClick={() => {
               router.push(`/profile/${post.userId}`);
             }}
-            className="size-12 rounded-full outline-2 outline-primary cursor-pointer"
+            className="size-12 rounded-full outline hover:outline-2 hover:outline-primary cursor-pointer"
           />
           <div className="flex flex-col">
             <p className="max-w-[140px] text-zinc-400 text-base">
@@ -104,7 +112,7 @@ export function Post({ user, post }: { user: IUser; post: IPost }) {
       )}
 
       <div className="w-full flex items-center gap-4 pb-2 border-b-2 border-zinc-800">
-        <Like user={user} post={post} />
+        <Like post={post} />
 
         <div className="w-full flex gap-1 items-center">
           <div className="flex cursor-pointer items-center text-sm p-2 rounded-md text-zinc-600 hover:text-primary hover:bg-primary/10 transition-all">
@@ -112,9 +120,7 @@ export function Post({ user, post }: { user: IUser; post: IPost }) {
           </div>
 
           {post.commentsCount != 0 && (
-            <p className="text-zinc-500 text-sm font-medium">
-              {post.commentsCount}
-            </p>
+            <p className="text-zinc-500 text-sm font-medium">{commentCount}</p>
           )}
         </div>
       </div>
@@ -148,7 +154,7 @@ export function Post({ user, post }: { user: IUser; post: IPost }) {
           onClick={() => {
             router.push(`/profile/${user.sub}`);
           }}
-          className="size-10 rounded-full outline cursor-pointer outline-2 outline-primary"
+          className="size-10 rounded-full cursor-pointer outline hover:outline-2 hover:outline-primary"
         />
         <Input
           placeholder="Escreva um comentário..."

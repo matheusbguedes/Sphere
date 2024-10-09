@@ -33,6 +33,10 @@ export async function postsRoutes(app: FastifyInstance) {
     });
 
     return posts.map((post) => {
+      const isLikedByUser = post.likes.find(
+        (like) => like.userId == request.user.sub
+      );
+
       return {
         id: post.id,
         userName: post.userName,
@@ -40,6 +44,7 @@ export async function postsRoutes(app: FastifyInstance) {
         avatarUrl: post.avatarUrl,
         content: post.content,
         postImageUrl: post.postImageUrl,
+        isLikedByUser,
         likesCount: post.likes.length,
         commentsCount: post.comments.length,
         // Last 5 likes
@@ -72,6 +77,10 @@ export async function postsRoutes(app: FastifyInstance) {
       },
     });
 
+    const isLikedByUser = post.likes.find(
+      (like) => like.userId == request.user.sub
+    );
+
     return {
       id: post.id,
       userName: post.userName,
@@ -79,6 +88,7 @@ export async function postsRoutes(app: FastifyInstance) {
       avatarUrl: post.avatarUrl,
       content: post.content,
       postImageUrl: post.postImageUrl,
+      isLikedByUser,
       likesCount: post.likes.length,
       commentsCount: post.comments.length,
       ...(post.likes.length > 0 && {

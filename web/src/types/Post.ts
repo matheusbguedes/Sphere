@@ -8,6 +8,7 @@ export interface IPost {
   avatarUrl: string;
   content: string;
   postImageUrl: string | null;
+  isLikedByUser: boolean;
   likesCount: number;
   commentsCount: number;
   likes: ILike[] | null;
