@@ -1,4 +1,4 @@
-# Esphere
+# Sphere
 
 Sphere é um projeto acadêmico onde os participantes podem escolher as tecnologias e criar um projeto funcional.
 
@@ -24,15 +24,19 @@ Para instalar, siga os passos abaixo:
 - Para o diretório 'web', configure o arquivo .env.local com o seguinte conteúdo:
 
 ```
-NEXT_PUBLIC_GITHUB_CLIENT_ID=a2375a89197cca824131
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3333
+NEXT_PUBLIC_GITHUB_CLIENT_ID=*
 ```
 
 - Para o diretório 'server', configure o arquivo .env com o seguinte conteúdo:
 
 ```
-DATABASE_URL=file:./dev.db
-GITHUB_CLIENT_ID=a2375a89197cca824131
-GITHUB_CLIENT_SECRET=5e2125f71225a04371a9184f2c566520b1833a62
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/sphere
+SERVER_PORT=3333
+SERVER_HOST=0.0.0.0
+SERVER_SECRET=*
+GITHUB_CLIENT_ID=*
+GITHUB_CLIENT_SECRET=*
 ```
 
 3. No terminal, execute:
@@ -61,8 +65,8 @@ O projeto estará pronto e em execução no endereço http://localhost:3000.
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Shadcnui](https://github.com/shadcnui)
-- [Fastify](https://www.fastify.io/) 
-- [Prisma](https://www.prisma.io/) 
+- [Fastify](https://www.fastify.io/)
+- [Prisma](https://www.prisma.io/)
 
 ## ✒️ Autores
 

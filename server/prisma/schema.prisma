@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -14,8 +14,8 @@ model User {
   login     String
   avatarUrl String
 
-  followers Friend[] @relation("follower")
-  following Friend[] @relation("following")
+  followers Friend[]      @relation("follower")
+  following Friend[]      @relation("following")
   posts     Post[]
   likes     Like[]
   comments  PostComment[]
@@ -45,9 +45,9 @@ model Post {
   content      String
   createdAt    DateTime @default(now())
 
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  likes      Like[]
-  comments   PostComment[]
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes    Like[]
+  comments PostComment[]
 }
 
 model Like {
@@ -68,8 +68,8 @@ model PostComment {
   userName  String
   avatarUrl String
 
-  postId String
-  content String
+  postId    String
+  content   String
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
