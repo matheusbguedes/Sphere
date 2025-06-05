@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 import { prisma } from "../lib/prisma";
 
 export async function feedRoutes(app: FastifyInstance) {
-  app.get("/", async (request) => {
+  app.get("/", async (request, reply) => {
     const posts = await prisma.post.findMany({
       where: {
         OR: [
@@ -28,10 +28,11 @@ export async function feedRoutes(app: FastifyInstance) {
       },
     });
 
-    return posts.map((post) => {
+    const formattedPosts = posts.map((post) => {
       const isLikedByUser = post.likes.find(
         (like) => like.user_id === request.user.sub
       );
+
 
       return {
         id: post.id,
@@ -40,19 +41,19 @@ export async function feedRoutes(app: FastifyInstance) {
         avatar_url: post.user.avatar_url,
         content: post.content,
         post_image_url: post.post_image_url,
-        isLikedByUser,
-        likesCount: post.likes.length,
-        commentsCount: post.comments.length,
-        // Last 5 likes
+        is_liked_by_user: isLikedByUser,
+        likes_count: post.likes.length,
+        comments_count: post.comments.length,
         ...(post.likes.length > 0 && {
           likes: post.likes.slice(-5),
         }),
-        // Last 5 comments
         ...(post.comments.length > 0 && {
           comments: post.comments.slice(-5),
         }),
         created_at: post.created_at,
       };
     });
+
+    return reply.status(200).send(formattedPosts);
   });
 } 

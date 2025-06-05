@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function userRoutes(app: FastifyInstance) {
-  app.get("/:id", async (request, response) => {
+  app.get("/:id", async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string().uuid(),
     });
@@ -22,7 +22,7 @@ export async function userRoutes(app: FastifyInstance) {
     });
 
     if (!user) {
-      return response.status(404).send({ error: "User not found" });
+      return reply.status(404).send({ error: "User not found" });
     }
 
     const findFollower = await prisma.follower.findFirst({
@@ -32,21 +32,21 @@ export async function userRoutes(app: FastifyInstance) {
       },
     });
 
-    const isFollower = !!findFollower;
+    const is_follower = !!findFollower;
 
-    return {
+    return reply.status(200).send({
       id: user.id,
       name: user.name,
-      avatarUrl: user.avatar_url,
-      isFollower,
-      followerId: findFollower?.id,
-      postsCount: user.posts.length,
-      followersCount: user.followers.length,
-      followingCount: user.following.length,
-    };
+      avatar_url: user.avatar_url,
+      is_follower,
+      follower_id: findFollower?.id,
+      posts_count: user.posts.length,
+      followers_count: user.followers.length,
+      following_count: user.following.length,
+    });
   });
 
-  app.get("/:id/posts", async (request) => {
+  app.get("/:id/posts", async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string().uuid(),
     });
@@ -67,26 +67,24 @@ export async function userRoutes(app: FastifyInstance) {
       },
     });
 
-    return userPosts.map((post) => {
-      return {
-        id: post.id,
-        userName: post.user.name,
-        userId: post.user.id,
-        avatarUrl: post.user.avatar_url,
-        content: post.content,
-        postImageUrl: post.post_image_url,
-        likesCount: post.likes.length,
-        commentsCount: post.comments.length,
-        // Last 5 likes
-        ...(post.likes.length > 0 && {
-          likes: post.likes.slice(-5),
-        }),
-        // Last 5 comments
-        ...(post.comments.length > 0 && {
-          comments: post.comments.slice(-5),
-        }),
-        createdAt: post.created_at,
-      };
-    });
+    const formattedPosts = userPosts.map((post) => ({
+      id: post.id,
+      user_name: post.user.name,
+      user_id: post.user.id,
+      avatar_url: post.user.avatar_url,
+      content: post.content,
+      post_image_url: post.post_image_url,
+      likes_count: post.likes.length,
+      comments_count: post.comments.length,
+      ...(post.likes.length > 0 && {
+        likes: post.likes.slice(-5),
+      }),
+      ...(post.comments.length > 0 && {
+        comments: post.comments.slice(-5),
+      }),
+      created_at: post.created_at,
+    }));
+
+    return reply.status(200).send(formattedPosts);
   });
 }

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function postsRoutes(app: FastifyInstance) {
-  app.get("/:id", async (request) => {
+  app.get("/:id", async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string().uuid(),
     });
@@ -25,16 +25,16 @@ export async function postsRoutes(app: FastifyInstance) {
       (like) => like.user_id === request.user.sub
     );
 
-    return {
+    return reply.status(200).send({
       id: post.id,
       user_name: post.user.name,
       user_id: post.user_id,
       avatar_url: post.user.avatar_url,
       content: post.content,
       post_image_url: post.post_image_url,
-      isLikedByUser,
-      likesCount: post.likes.length,
-      commentsCount: post.comments.length,
+      is_liked_by_user: isLikedByUser,
+      likes_count: post.likes.length,
+      comments_count: post.comments.length,
       ...(post.likes.length > 0 && {
         likes: post.likes.slice(-5),
       }),
@@ -42,7 +42,7 @@ export async function postsRoutes(app: FastifyInstance) {
         comments: post.comments,
       }),
       created_at: post.created_at,
-    };
+    });
   });
 
   app.post("/", async (request, reply) => {
@@ -88,5 +88,7 @@ export async function postsRoutes(app: FastifyInstance) {
         id,
       },
     });
+
+    return reply.status(204).send();
   });
 }
