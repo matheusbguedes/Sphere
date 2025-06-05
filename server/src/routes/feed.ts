@@ -2,6 +2,10 @@ import { FastifyInstance } from "fastify";
 import { prisma } from "../lib/prisma";
 
 export async function feedRoutes(app: FastifyInstance) {
+  app.addHook("preHandler", async (request, _) => {
+    await request.jwtVerify();
+  });
+  
   app.get("/", {
     schema: {
       tags: ["Feed"],

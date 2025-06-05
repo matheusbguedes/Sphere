@@ -69,25 +69,11 @@ app.register(jwt, {
   secret: env.SERVER_SECRET,
 });
 
-app.decorate("verifyAuth", async (request: FastifyRequest, reply: FastifyReply) => {
-  try {
-    await request.jwtVerify();
-  } catch (err) {
-    return reply.status(401).send({ message: "Unauthorized" });
-  }
-});
-
-declare module "fastify" {
-  interface FastifyInstance {
-    verifyAuth(request: FastifyRequest, reply: FastifyReply): Promise<void>;
-  }
-}
-
 app.register(authRoutes);
 app.register(uploadRoutes);
-app.register(userRoutes, { prefix: "/user", preHandler: [app.verifyAuth] });
-app.register(feedRoutes, { prefix: "/feed", preHandler: [app.verifyAuth] });
-app.register(postsRoutes, { prefix: "/post", preHandler: [app.verifyAuth] });
-app.register(likesRoutes, { prefix: "/likes", preHandler: [app.verifyAuth] });
-app.register(commentsRoutes, { prefix: "/comments", preHandler: [app.verifyAuth] });
-app.register(followerRoutes, { prefix: "/follower", preHandler: [app.verifyAuth] });
+app.register(userRoutes, { prefix: "/user" });
+app.register(feedRoutes, { prefix: "/feed" });
+app.register(postsRoutes, { prefix: "/post" });
+app.register(likesRoutes, { prefix: "/likes" });
+app.register(commentsRoutes, { prefix: "/comments" });
+app.register(followerRoutes, { prefix: "/follower" });

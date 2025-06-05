@@ -3,6 +3,10 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function likesRoutes(app: FastifyInstance) {
+  app.addHook("preHandler", async (request, _) => {
+    await request.jwtVerify();
+  });
+  
   app.post("/:postId/like", {
     schema: {
       tags: ["Likes"],
@@ -32,6 +36,17 @@ export async function likesRoutes(app: FastifyInstance) {
     });
 
     const { postId } = paramsSchema.parse(request.params);
+
+    const alreadyLiked = await prisma.like.findFirst({
+      where: {
+        user_id: request.user.sub,
+        post_id: postId,
+      },
+    });
+
+    if (alreadyLiked) {
+      return reply.status(400).send({ message: "Post already liked" });
+    }
 
     const like = await prisma.like.create({
       data: {

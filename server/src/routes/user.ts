@@ -3,6 +3,10 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function userRoutes(app: FastifyInstance) {
+  app.addHook("preHandler", async (request, _) => {
+    await request.jwtVerify();
+  });
+  
   app.get("/:id", {
     schema: {
       tags: ["User"],

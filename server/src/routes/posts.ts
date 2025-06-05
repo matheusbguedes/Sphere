@@ -3,6 +3,10 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function postsRoutes(app: FastifyInstance) {
+  app.addHook("preHandler", async (request, _) => {
+    await request.jwtVerify();
+  });
+
   app.get("/:id", {
     schema: {
       tags: ["Posts"],
@@ -82,11 +86,10 @@ export async function postsRoutes(app: FastifyInstance) {
       body: {
         type: "object",
         properties: {
-          content: { type: "string", description: "Conteúdo do post" },
-          post_image_url: { type: "string", description: "URL da imagem do post" },
-          created_at: { type: "string", description: "Data de criação do post" }
+          content: { type: "string", description: "Conteúdo da postagem" },
+          post_image_url: { type: "string", description: "URL da imagem da postagem" },
         },
-        required: ["content", "post_image_url", "created_at"]
+        required: ["content"]
       },
       response: {
         201: {
@@ -105,18 +108,16 @@ export async function postsRoutes(app: FastifyInstance) {
   }, async (request, reply) => {
     const bodySchema = z.object({
       content: z.string(),
-      post_image_url: z.string(),
-      created_at: z.string(),
+      post_image_url: z.string().optional(),
     });
 
-    const { content, post_image_url, created_at } = bodySchema.parse(request.body);
+    const { content, post_image_url } = bodySchema.parse(request.body);
 
     const post = await prisma.post.create({
       data: {
         user_id: request.user.sub,
         content,
         post_image_url,
-        created_at,
       },
     });
 

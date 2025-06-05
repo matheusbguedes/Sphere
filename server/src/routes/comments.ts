@@ -3,6 +3,10 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function commentsRoutes(app: FastifyInstance) {
+  app.addHook("preHandler", async (request, _) => {
+    await request.jwtVerify();
+  });
+
   app.post("/:postId/comment", {
     schema: {
       tags: ["Comments"],
