@@ -8,70 +8,77 @@ datasource db {
 }
 
 model User {
-  id        String @id @default(uuid())
-  githubId  Int    @unique
-  name      String
-  login     String
-  avatarUrl String
+  id         String   @id @default(uuid())
+  github_id  Int      @unique
+  name       String
+  login      String
+  avatar_url String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  followers Friend[]      @relation("follower")
-  following Friend[]      @relation("following")
+  followers Follower[] @relation("follower")
+  following Follower[] @relation("following")
   posts     Post[]
   likes     Like[]
-  comments  PostComment[]
+  comments  Comment[]
+
+  @@map("users")
 }
 
-model Friend {
-  id        String @id @default(uuid())
-  follower  String @map("user_id")
-  followed  String @map("friend_id")
-  name      String
-  avatarUrl String
+model Follower {
+  id         String   @id @default(uuid())
+  follower   String   @map("follower_id")
+  followed   String   @map("followed_id")
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   user   User @relation("following", fields: [follower], references: [id])
   friend User @relation("follower", fields: [followed], references: [id])
 
   @@index([follower], name: "follower")
   @@index([followed], name: "followed")
+  @@map("followers")
 }
 
 model Post {
-  id        String @id @default(uuid())
-  userId    String
-  userName  String
-  avatarUrl String
+  id             String   @id @default(uuid())
+  post_image_url String?
+  content        String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
-  postImageUrl String?
-  content      String
-  createdAt    DateTime @default(now())
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes    Like[]
-  comments PostComment[]
+  comments Comment[]
+
+  @@map("posts")
 }
 
 model Like {
-  id        String @id @default(uuid())
-  userId    String
-  userName  String
-  avatarUrl String
+  id         String   @id @default(uuid())
+  user_id    String
+  post_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  postId String
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@map("likes")
 }
 
-model PostComment {
-  id        String @id @default(uuid())
-  userId    String
-  userName  String
-  avatarUrl String
+model Comment {
+  id         String   @id @default(uuid())
+  user_id    String
+  post_id    String
+  content    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  postId    String
-  content   String
-  createdAt DateTime @default(now())
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@map("comments")
 }
