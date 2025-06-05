@@ -8,7 +8,33 @@ import { promisify } from "node:util";
 const pump = promisify(pipeline);
 
 export async function uploadRoutes(app: FastifyInstance) {
-  app.post("/upload", async (request, reply) => {
+  app.post("/upload", {
+    schema: {
+      tags: ["Upload"],
+      summary: "Fazer upload de uma imagem",
+      description: "Permite o upload de imagens com tamanho máximo de 5MB",
+      consumes: ["multipart/form-data"],
+      body: {
+        type: "object",
+        properties: {
+          file: { type: "string", format: "binary", description: "Arquivo de imagem" }
+        },
+        required: ["file"]
+      },
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            fileUrl: { type: "string", description: "URL da imagem enviada" }
+          }
+        },
+        400: {
+          type: "null",
+          description: "Arquivo não fornecido ou formato inválido"
+        }
+      }
+    }
+  }, async (request, reply) => {
     const upload = await request.file({
       limits: {
         fileSize: 5_242_880, // 5mb

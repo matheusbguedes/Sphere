@@ -3,7 +3,41 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function userRoutes(app: FastifyInstance) {
-  app.get("/:id", async (request, reply) => {
+  app.get("/:id", {
+    schema: {
+      tags: ["User"],
+      summary: "Obter informações de um usuário",
+      params: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid", description: "ID do usuário" }
+        },
+        required: ["id"]
+      },
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            name: { type: "string" },
+            avatar_url: { type: "string" },
+            is_follower: { type: "boolean" },
+            follower_id: { type: "string", nullable: true },
+            posts_count: { type: "number" },
+            followers_count: { type: "number" },
+            following_count: { type: "number" }
+          }
+        },
+        404: {
+          type: "object",
+          properties: {
+            error: { type: "string" }
+          }
+        }
+      },
+      security: [{ bearerAuth: [] }]
+    }
+  }, async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string().uuid(),
     });
@@ -46,7 +80,39 @@ export async function userRoutes(app: FastifyInstance) {
     });
   });
 
-  app.get("/:id/posts", async (request, reply) => {
+  app.get("/:id/posts", {
+    schema: {
+      tags: ["User"],
+      summary: "Obter posts de um usuário",
+      params: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid", description: "ID do usuário" }
+        },
+        required: ["id"]
+      },
+      response: {
+        200: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              user_name: { type: "string" },
+              user_id: { type: "string" },
+              avatar_url: { type: "string" },
+              content: { type: "string" },
+              post_image_url: { type: "string" },
+              likes_count: { type: "number" },
+              comments_count: { type: "number" },
+              created_at: { type: "string" }
+            }
+          }
+        }
+      },
+      security: [{ bearerAuth: [] }]
+    }
+  }, async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string().uuid(),
     });

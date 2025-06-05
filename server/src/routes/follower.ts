@@ -3,7 +3,27 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function followerRoutes(app: FastifyInstance) {
-  app.get("/", async (request, reply) => {
+  app.get("/", {
+    schema: {
+      tags: ["Followers"],
+      summary: "Listar usuários que você segue",
+      response: {
+        200: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              user_id: { type: "string" },
+              name: { type: "string" },
+              avatar_url: { type: "string" }
+            }
+          }
+        }
+      },
+      security: [{ bearerAuth: [] }]
+    }
+  }, async (request, reply) => {
     const followers = await prisma.follower.findMany({
       where: {
         follower: request.user.sub,
@@ -23,7 +43,30 @@ export async function followerRoutes(app: FastifyInstance) {
     return reply.status(200).send(formattedFollowers);
   });
 
-  app.post("/:id/follow", async (request, reply) => {
+  app.post("/:id/follow", {
+    schema: {
+      tags: ["Followers"],
+      summary: "Seguir um usuário",
+      params: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid", description: "ID do usuário a ser seguido" }
+        },
+        required: ["id"]
+      },
+      response: {
+        201: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            follower: { type: "string" },
+            followed: { type: "string" }
+          }
+        }
+      },
+      security: [{ bearerAuth: [] }]
+    }
+  }, async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string().uuid(),
     });
@@ -40,7 +83,26 @@ export async function followerRoutes(app: FastifyInstance) {
     return reply.status(201).send(follower);
   });
 
-  app.delete("/:id/unfollow", async (request, reply) => {
+  app.delete("/:id/unfollow", {
+    schema: {
+      tags: ["Followers"],
+      summary: "Deixar de seguir um usuário",
+      params: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid", description: "ID da relação de seguidor" }
+        },
+        required: ["id"]
+      },
+      response: {
+        204: {
+          type: "null",
+          description: "Deixou de seguir com sucesso"
+        }
+      },
+      security: [{ bearerAuth: [] }]
+    }
+  }, async (request, reply) => {
     const paramsSchema = z.object({
       id: z.string().uuid(),
     });
@@ -56,7 +118,27 @@ export async function followerRoutes(app: FastifyInstance) {
     return reply.status(204).send();
   });
 
-  app.get("/sugestions", async (request, reply) => {
+  app.get("/sugestions", {
+    schema: {
+      tags: ["Followers"],
+      summary: "Obter sugestões de usuários para seguir",
+      description: "Retorna usuários que você ainda não segue",
+      response: {
+        200: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              avatar_url: { type: "string" }
+            }
+          }
+        }
+      },
+      security: [{ bearerAuth: [] }]
+    }
+  }, async (request, reply) => {
     const allUsers = await prisma.user.findMany();
 
     const followers = await prisma.follower.findMany({

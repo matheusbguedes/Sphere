@@ -4,7 +4,28 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function authRoutes(app: FastifyInstance) {
-  app.post("/register", async (request, reply) => {
+  app.post("/register", {
+    schema: {
+      tags: ["Auth"],
+      summary: "Registrar/Autenticar usuário com GitHub",
+      description: "Realiza autenticação OAuth com GitHub e retorna um token JWT",
+      body: {
+        type: "object",
+        properties: {
+          code: { type: "string", description: "Código de autorização do GitHub" }
+        },
+        required: ["code"]
+      },
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            token: { type: "string", description: "Token JWT para autenticação" }
+          }
+        }
+      }
+    }
+  }, async (request, reply) => {
     const bodySchema = z.object({
       code: z.string(),
     });

@@ -3,7 +3,30 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma";
 
 export async function likesRoutes(app: FastifyInstance) {
-  app.post("/:postId/like", async (request, reply) => {
+  app.post("/:postId/like", {
+    schema: {
+      tags: ["Likes"],
+      summary: "Curtir um post",
+      params: {
+        type: "object",
+        properties: {
+          postId: { type: "string", format: "uuid", description: "ID do post" }
+        },
+        required: ["postId"]
+      },
+      response: {
+        201: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            user_id: { type: "string" },
+            post_id: { type: "string" }
+          }
+        }
+      },
+      security: [{ bearerAuth: [] }]
+    }
+  }, async (request, reply) => {
     const paramsSchema = z.object({
       postId: z.string().uuid(),
     });
@@ -20,7 +43,30 @@ export async function likesRoutes(app: FastifyInstance) {
     return reply.status(201).send(like);
   });
 
-  app.delete("/:postId/like", async (request, reply) => {
+  app.delete("/:postId/like", {
+    schema: {
+      tags: ["Likes"],
+      summary: "Remover curtida de um post",
+      params: {
+        type: "object",
+        properties: {
+          postId: { type: "string", format: "uuid", description: "ID do post" }
+        },
+        required: ["postId"]
+      },
+      response: {
+        204: {
+          type: "null",
+          description: "Curtida removida com sucesso"
+        },
+        400: {
+          type: "null",
+          description: "Post não foi curtido pelo usuário"
+        }
+      },
+      security: [{ bearerAuth: [] }]
+    }
+  }, async (request, reply) => {
     const paramsSchema = z.object({
       postId: z.string().uuid(),
     });
